@@ -1,0 +1,16 @@
+# Mac
+.DS_Store
+
+# Node
+node_modules/
+
+# Environnement
+.env
+.env.local
+
+# Logs
+*.log
+
+# Cursor/VSCode
+.cursor/
+.vscode/

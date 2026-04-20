@@ -24,6 +24,10 @@ const projects = [
  
  const projectName = document.querySelector('.project-name')
  const projectType = document.querySelector('.project-type')
- 
- projectName.textContent = projects[state.activeIndex].name
- projectType.textContent = projects[state.activeIndex].type
+  
+ function updateProjectInfo () {
+   projectName.textContent = projects[state.activeIndex].name
+   projectType.textContent = projects[state.activeIndex].type
+}
+updateProjectInfo ()
+

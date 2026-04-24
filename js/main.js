@@ -50,3 +50,16 @@ btnNext.addEventListener('click', function (){
 btnPrev.addEventListener('click', function(){
   navigateProject(-1)
 })
+
+window.addEventListener('wheel', function(event){
+
+  if (event.deltaY > 0) {
+    navigateProject(1)
+   
+   
+ 
+   } else {
+      navigateProject(-1)
+ }
+})
+

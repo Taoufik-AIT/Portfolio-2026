@@ -37,20 +37,16 @@ const btnNext = document.querySelector('.btn-next')
 const btnPrev = document.querySelector('.btn-prev')
 
 
-
-function nextProject () {
-  state.activeIndex = (state.activeIndex + 1) % projects.length
-  
-  updateProjectInfo ()
-}
-
-btnNext.addEventListener('click', nextProject)
-
-function prevProject () {
-  state.activeIndex = (state.activeIndex - 1 + projects.length) % projects.length
+function navigateProject (direction) {
+  state.activeIndex = (state.activeIndex + direction + projects.length) % projects.length
 
   updateProjectInfo ()
 
 }
+btnNext.addEventListener('click', function (){
+  navigateProject(1)
+})
 
-btnPrev.addEventListener('click', prevProject)
+btnPrev.addEventListener('click', function(){
+  navigateProject(-1)
+})

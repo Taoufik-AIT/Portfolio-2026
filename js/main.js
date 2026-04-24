@@ -7,7 +7,7 @@ const projects = [
    {
      name: 'Adel&Adele',
      year: 2024,
-     type: 'Design & Development',
+     type: 'Design',
    },
    {
      name: 'Dimagin-Studio',
@@ -21,6 +21,7 @@ const projects = [
    isPopupOpen: false,
    isAboutOpen: false,
  }
+  
  
  const projectName = document.querySelector('.project-name')
  const projectType = document.querySelector('.project-type')
@@ -31,3 +32,25 @@ const projects = [
 }
 updateProjectInfo ()
 
+
+const btnNext = document.querySelector('.btn-next')
+const btnPrev = document.querySelector('.btn-prev')
+
+
+
+function nextProject () {
+  state.activeIndex = (state.activeIndex + 1) % projects.length
+  
+  updateProjectInfo ()
+}
+
+btnNext.addEventListener('click', nextProject)
+
+function prevProject () {
+  state.activeIndex = (state.activeIndex - 1 + projects.length) % projects.length
+
+  updateProjectInfo ()
+
+}
+
+btnPrev.addEventListener('click', prevProject)

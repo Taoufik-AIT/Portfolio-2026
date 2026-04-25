@@ -43,6 +43,7 @@ function navigateProject (direction) {
   updateProjectInfo ()
 
 }
+
 btnNext.addEventListener('click', function (){
   navigateProject(1)
 })
@@ -61,5 +62,22 @@ window.addEventListener('wheel', function(event){
    } else {
       navigateProject(-1)
  }
+})
+
+let startX = 0
+
+window.addEventListener('mousedown', function (event){
+ startX = event.clientX 
+})
+
+window.addEventListener('mouseup', function (event){
+  if (event.clientX > startX) {
+    navigateProject(1)
+  
+  } else {
+    navigateProject(-1)
+
+  }
+
 })
 

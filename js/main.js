@@ -70,14 +70,19 @@ window.addEventListener('mousedown', function (event){
  startX = event.clientX 
 })
 
-window.addEventListener('mouseup', function (event){
-  if (event.clientX > startX) {
-    navigateProject(1)
+window.addEventListener('mouseup', function(event) {
+  const distance = Math.abs(event.clientX - startX)
   
+  if (distance > 50) {          // cas 1 et 2
+    if (event.clientX > startX) {
+      navigateProject(1)
+      console.log('drag droite') // ← cas 1
+    } else {
+      navigateProject(-1)
+      console.log('drag gauche') // ← cas 2
+    }
   } else {
-    navigateProject(-1)
-
+    console.log('simple clic')   // ← cas 3
   }
-
 })
 

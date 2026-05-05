@@ -33,8 +33,6 @@ const projects = [
 updateProjectInfo ()
 
 
-const btnNext = document.querySelector('.btn-next')
-const btnPrev = document.querySelector('.btn-prev')
 
 
 function navigateProject (direction) {
@@ -44,13 +42,6 @@ function navigateProject (direction) {
 
 }
 
-btnNext.addEventListener('click', function (){
-  navigateProject(1)
-})
-
-btnPrev.addEventListener('click', function(){
-  navigateProject(-1)
-})
 
 window.addEventListener('wheel', function(event){
 
@@ -76,13 +67,10 @@ window.addEventListener('mouseup', function(event) {
   if (distance > 50) {          // cas 1 et 2
     if (event.clientX > startX) {
       navigateProject(1)
-      console.log('drag droite') // ← cas 1
     } else {
       navigateProject(-1)
-      console.log('drag gauche') // ← cas 2
     }
   } else {
-    console.log('simple clic')   // ← cas 3
   }
 })
 

@@ -33,8 +33,6 @@ const projects = [
 updateProjectInfo ()
 
 
-
-
 function navigateProject (direction) {
   state.activeIndex = (state.activeIndex + direction + projects.length) % projects.length
 
@@ -42,14 +40,11 @@ function navigateProject (direction) {
 
 }
 
-
 window.addEventListener('wheel', function(event){
 
   if (event.deltaY > 0) {
     navigateProject(1)
    
-   
- 
    } else {
       navigateProject(-1)
  }

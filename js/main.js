@@ -6,12 +6,12 @@ const projects = [
    },
    {
      name: 'Adel&Adele',
-     year: 2024,
+     year: 2025,
      type: 'Design',
    },
    {
      name: 'Dimagin-Studio',
-     year: 2025,
+     year: 2023,
      type: 'Design & Development',
    },
  ]
@@ -25,10 +25,12 @@ const projects = [
  
  const projectName = document.querySelector('.project__name')
  const projectType = document.querySelector('.project__type')
+ const projectYear = document.querySelector('.project__year')
   
  function updateProjectInfo () {
    projectName.textContent = projects[state.activeIndex].name
    projectType.textContent = projects[state.activeIndex].type
+   projectYear.textContent = projects[state.activeIndex].year
 }
 updateProjectInfo ()
 

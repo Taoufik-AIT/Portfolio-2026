@@ -3,16 +3,32 @@ const projects = [
      name: 'Get Your Way',
      year: 2024,
      type: 'Design & Development',
+     description: 'I designed and developed a modern e-commerce',
+     client: 'Get Your Way',
+     sector: 'Tech', 
+     role: 'Product Designer',
+     scope: 'UX / UI / Frontend',
    },
    {
      name: 'Adel&Adele',
      year: 2025,
      type: 'Design',
+     description: 'I designed and developed',
+     client: 'Get Your Way',
+     sector: 'Tech', 
+     role: 'frontend dev & motion',
+     scope: 'UX / UI / Frontend',
+
    },
    {
      name: 'Dimagin-Studio',
      year: 2023,
      type: 'Design & Development',
+     description: 'I designed and developed a creative studio site',
+     client: 'Get Your Way',
+     sector: 'Tech', 
+     role: 'design engineer & motion',
+     scope: 'UX / UI / Frontend',
    },
  ]
  

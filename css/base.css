@@ -1,0 +1,60 @@
+@font-face {
+    font-family: 'Serif Italic';
+    src: url('../fonts/serif-italic.woff2') format('woff2');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+  }
+
+:root {
+    /* Couleurs */
+    --color-bg: #F4F4F5;
+    --color-dark: #191919;
+    --color-gray: #979797;
+    --color-red: #E14942;
+  
+    /* Fonts */
+    --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --font-editorial: 'Serif Italic', Georgia, serif;
+    
+    /* Tailles de texte */
+    --text-xs: 11px;
+    --text-sm: 13px;
+    --text-base: 14px;
+    --text-lg: 20px;
+    --text-xl: 32px;
+  
+    /* Graisses */
+    --weight-regular: 400;
+    --weight-medium: 500;
+    --weight-bold: 700;
+  
+    /* Espacements */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 32px;
+    --space-xl: 64px;
+  
+    /* Grid */
+    --grid-columns: 12;
+    --grid-gutter: 25px;
+    --grid-margin: 19px;
+  
+    /* Line height */
+    --leading-tight: 1.1;
+    --leading-normal: 1.5;
+  }
+  
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-dark);
+    font-family: var(--font-main);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+  }
+  
+  .nav__logo-italic {
+    font-family: var(--font-editorial);
+    font-style: italic;
+  }

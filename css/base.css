@@ -21,7 +21,7 @@
     --text-xs: 11px;
     --text-sm: 13px;
     --text-base: 14px;
-    --text-lg: 20px;
+    --text-lg: 18px;
     --text-xl: 32px;
   
     /* Graisses */
@@ -56,5 +56,27 @@
   
   .nav__logo-italic {
     font-family: var(--font-editorial);
+    text-transform: capitalize;
+    font-weight: var(--weight-regular);
     font-style: italic;
   }
+  
+  .nav__logo {
+    font-weight: var(--weight-bold);
+    font-size: var(--text-lg);
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    padding: 0;
+  }
+  
+.nav__description{
+  font-weight: var(--weight-bold);
+  line-height: 19px;
+  letter-spacing: -0.5px;
+}
+
+.nav__links {
+  font-weight: var(--weight-bold);
+  line-height: 19px;
+  letter-spacing: -0.5px;
+}

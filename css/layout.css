@@ -41,8 +41,21 @@
 
 }
 
+.nav__chat-wrapper {
+  position: relative;
+}
+
 .nav__dropdown {
   display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+}
+
+.nav__dropdown.is-open {
+  display: flex;
+  flex-direction: column;
 }
 
 .grid-overlay {

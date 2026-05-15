@@ -87,3 +87,9 @@ window.addEventListener('mouseup', function(event) {
   }
 })
 
+const ctaButton = document.querySelector('.nav__cta')
+const dropdown = document.querySelector('.nav__dropdown')
+
+ctaButton.addEventListener('click', function() {
+  dropdown.classList.toggle('is-open')
+})

@@ -1,5 +1,10 @@
 .main {
+  position: relative;
   padding-top: 100px;
+}
+
+.loader {
+  display: none;
 }
 
 .nav {
@@ -53,12 +58,16 @@
   width: 100%;
 }
 
+.preview-wrapper {
+  position: relative;
+  width: 775px;
+  margin: 70px auto 0;
+}
+
 .preview {
-  width: 767px;
+  width: 100%;
   height: 456px;
-  margin: 0 auto;
   overflow: hidden;
-  margin-top: 35px;
 }
 
 .preview__img {
@@ -70,6 +79,123 @@
 .nav__dropdown.is-open {
   display: flex;
   flex-direction: column;
+}
+
+.project-info {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 286.5px;
+  left: -347px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.project__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var( --color-gray);
+}
+
+.project__name {
+  font-size: var(--text-base); 
+  font-weight: var(--weight-bold);
+}
+
+.project__type::after {
+  content: '|';
+  margin-left: 8px;
+  color: var(--color-gray);
+  font-weight: var(--weight-light);
+}
+
+.project__cta::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: var(--color-red);
+  margin-right: 6px;
+}
+
+.project__cta {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  color: var(--color-dark);
+}
+
+.carousel {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  bottom: 0;
+  width: 100%;
+  height: 123px;
+  z-index: 99;
+}
+
+.carousel__ruler {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+}
+
+.carousel__label {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-gray);
+}
+
+.carousel__triangle {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 7px solid var(--color-red);
+}
+
+.carousel__line {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  gap: 5px;
+}
+
+.carousel__tick {
+  display: inline-block;
+  width: 0.5px;
+  height: 8px;
+  background-color: var(--color-dark);
+  flex-shrink: 0;
+}
+
+.carousel__tick--active {
+  height: 16px;
+  background-color: var(--color-red);
+}
+
+.carousel__track {
+  display: none;
+}
+
+.popup-project {
+  display: none;
+}
+
+.popup-about {
+  display: none;
+}
+
+.cursor {
+  display: none;
 }
 
 .grid-overlay {

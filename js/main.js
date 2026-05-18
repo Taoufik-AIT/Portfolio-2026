@@ -94,3 +94,19 @@ ctaButton.addEventListener('click', function() {
   dropdown.classList.toggle('is-open')
 })
 
+
+const line = document.querySelector('.carousel__line')
+
+
+let totalTicks = Math.floor(window.innerWidth / 5)
+if (totalTicks % 2 === 0) totalTicks--
+const centerIndex = Math.floor(totalTicks / 2)
+
+for (let i = 0; i < totalTicks; i++) {
+  const tick = document.createElement('span')
+  tick.classList.add('carousel__tick')
+  if (i === centerIndex) {
+    tick.classList.add('carousel__tick--active')
+  }
+  line.appendChild(tick)
+}

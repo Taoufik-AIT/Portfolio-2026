@@ -12,6 +12,7 @@
     --color-dark: #191919;
     --color-gray: #979797;
     --color-red: #E14942;
+    --color-popup: rgba(25, 25, 25, 0.85);
   
     /* Fonts */
     --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -36,6 +37,7 @@
     --space-md: 16px;
     --space-lg: 32px;
     --space-xl: 64px;
+    --space-2xl: 96px;
   
     /* Grid */
     --grid-columns: 12;

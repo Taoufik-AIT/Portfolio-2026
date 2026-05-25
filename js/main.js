@@ -1,3 +1,16 @@
+// Initialise Lenis principal sur la page globale 
+window.lenis = new Lenis({
+  autoRaf: true,
+});
+
+// ResizeObserver existant va mettre à jour ce scroll global
+const popupInner = document.querySelector('.popup-about__inner');
+const ro = new ResizeObserver(() => {
+  window.lenis.resize();
+});
+ro.observe(popupInner);
+
+
 const projects = [
    {
      name: 'Get Your Way',
@@ -62,7 +75,7 @@ window.addEventListener('wheel', function(event){
 
   if (event.deltaY > 0) {
     navigateProject(1)
-   
+
    } else {
       navigateProject(-1)
  }

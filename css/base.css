@@ -43,6 +43,10 @@
     --grid-columns: 12;
     --grid-gutter: 25px;
     --grid-margin: 19px;
+
+    /* About layout */
+    --about-col1: 280px;
+    --about-gap: 39px;
   
     /* Line height */
     --leading-tight: 1.1;
@@ -55,6 +59,10 @@
     font-family: var(--font-main);
     font-size: var(--text-base);
     line-height: var(--leading-normal);
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
   }
   
   .nav__logo-italic {

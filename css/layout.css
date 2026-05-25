@@ -126,11 +126,14 @@
 }
 
 .project__cta {
+  position: absolute;
+  right: -2px;
+  bottom: 0;
   display: inline-flex;
   align-items: center;
-  margin-left: auto;
   color: var(--color-dark);
 }
+
 
 .carousel {
   position: fixed;
@@ -156,6 +159,7 @@
   font-weight: var(--weight-medium);
   color: var(--color-gray);
 }
+
 
 .carousel__triangle {
   width: 0;
@@ -218,7 +222,7 @@
 }
 
 .popup-project {
-  display: block; /* temporaire */
+  display: none; /* temporaire (block) */
   position: fixed;
   width: 335px;
   background-color: var(--color-popup);
@@ -265,7 +269,7 @@
 }
 
 .popup__details dd {
-  color: white;
+  color: var(color);
   font-size: var(--text-sm);
   font-weight: var(--weight-bold);
   padding: 5px 0;
@@ -280,20 +284,41 @@
 .popup-about {
   display: block;
   position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 732px;
+  height: auto;
+  min-height: calc(100vh - 4px);
+  margin-bottom: 2px;
+  overflow: visible;
+  background-color: var(--color-red);
   font-size: var(--text-base);
   font-weight: var(--weight-bold);
-  top: 10px;
-  right: 10px;
-  width: 732px;
-  background-color: var(--color-red);
   z-index: 150;
   padding: 12px;
+}
+
+.popup-about::after {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: transparent;
+  pointer-events: none;
+}
+
+.popup-about__inner {
+  height: auto;
+  width: 100%;
 }
 
 .about__portrait-wrapper {
   position: relative;
   width: 214px;
-  margin-bottom: 136px;
+  margin-bottom: 120px;
 }
 
 .about__portrait {
@@ -319,26 +344,39 @@
   display: none;
 }
 
-
 .separator {
   width: 100%;
   height: 0.5px;
-  background-color: var(--color-bg);
+  background-color: var(--color-gray);
   opacity: 0.2;
 }
 
+.approach__slider {
+  position: relative;
+  width: 120px;
+  height: 90px;
+  overflow: hidden;
+}
+
 .about__approach-img {
-  width: 150px;
-  height: 120px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
 .about__section {
   display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 39px;
+  grid-template-columns: var(--about-col1) 1fr;
+  gap: var(--about-gap);
   padding-top: 10px;
-  padding-bottom: 70px;
+  padding-bottom: 85px;
+}
+
+.about__label {
+  color: var(--color-gray);
 }
 
 .about__content {
@@ -351,6 +389,105 @@
 .about__text p + p {
   margin-top: 10px;
 }
+
+.accordion__item {
+  padding: 0;
+  margin: 0;
+}
+
+.accordion__header {
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+  gap: var(--about-gap);
+  cursor: pointer;
+  list-style: none;
+}
+
+.accordion__header::-webkit-details-marker {
+  display: none;
+}
+
+.accordion__letter {
+  color: var(--color-gray);
+  font-size: var(--text-sm);
+  width: var(--about-col1);
+  flex-shrink: 0;
+}
+
+.accordion__title {
+  flex: 1;
+  font-weight: var(--weight-bold);
+  font-size: var(--text-sm);
+}
+
+.accordion__icon {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.accordion__icon-bar {
+  position: absolute;
+  background-color: var(--color-dark);
+  top: 50%;
+  left: 50%;
+}
+
+.accordion__icon-bar--h {
+  width: 12px;
+  height: 1px;
+  transform: translate(-50%, -50%);
+}
+
+.accordion__icon-bar--v {
+  width: 0.8px;
+  height: 12px;
+  transform: translate(-50%, -50%);
+}
+
+.accordion__content {
+  color: var(--color-gray);
+  padding: 12px 0 16px calc(var(--about-col1) + var(--about-gap));
+}
+
+.about__accordion {
+  margin-bottom: 100px;
+}
+
+.about__links {
+  display: grid;
+  grid-template-columns: var(--about-col1) 1fr;
+  gap: var(--about-gap);
+  padding: 1px 0;
+}
+
+.about__links-label {
+  color: var(--color-gray);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+}
+
+.about__links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.about__link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var(--color-dark);
+}
+
+.about__link-arrow {
+  transform: scaleX(-1);
+}
+
 
 .cursor {
   display: none;

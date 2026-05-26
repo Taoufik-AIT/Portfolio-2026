@@ -22,7 +22,7 @@
 .nav__left {
   display: flex;
   align-items: flex-start;
-  gap: 254px;
+  gap: 257px;
 }
 
 .nav__description {
@@ -269,7 +269,7 @@
 }
 
 .popup__details dd {
-  color: var(color);
+  color: var(--color-bg);
   font-size: var(--text-sm);
   font-weight: var(--weight-bold);
   padding: 5px 0;
@@ -491,6 +491,30 @@
 
 .cursor {
   display: none;
+  position: fixed;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+.cursor__bar {
+  position: absolute;
+  background-color: var(--color-dark);
+  top: 50%;
+  left: 50%;
+}
+
+.cursor__bar--h {
+  width: 14px;
+  height: 1px;
+  transform: translate(-50%, -50%);
+}
+
+.cursor__bar--v {
+  width: 1px;
+  height: 14px;
+  transform: translate(-50%, -50%);
 }
 
 .grid-overlay {

@@ -11,6 +11,12 @@ const ro = new ResizeObserver(() => {
 ro.observe(popupInner);
 
 
+// window.lenis = new Lenis({ autoRaf: true })
+// const popupInner = ...
+// const ro = new ResizeObserver(...)
+// ro.observe(popupInner)
+
+
 const projects = [
    {
      name: 'Get Your Way',

@@ -233,8 +233,9 @@
   left: 100px;
 }
 
-.popup__close {
-  display: none;
+
+.popup-project.is-open {
+  display: block;
 }
 
 .popup__title {
@@ -282,7 +283,7 @@
 }
 
 .popup-about {
-  display: block;
+  display: none;
   position: absolute;
   top: 4px;
   right: 4px;

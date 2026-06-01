@@ -22,6 +22,10 @@ document.addEventListener('click', function(event) {
 
   if (event.target.closest('.nav, .carousel, .popup-project, .project__cta')) return
   
+  // Positionner le popup à la position du clic
+  popupProject.style.left = event.clientX + 'px'
+  popupProject.style.top = event.clientY + 'px'
+  
   const isOpen = popupProject.classList.toggle('is-open')
   overlay.classList.toggle('is-open')
   state.isPopupOpen = isOpen

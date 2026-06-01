@@ -221,12 +221,28 @@
   flex-shrink: 0;
 }
 
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.01);
+  backdrop-filter: blur(8px);
+  z-index: 149;
+}
+
+.overlay.is-open {
+  display: block;
+}
+
 .popup-project {
   display: none; /* temporaire (block) */
   position: fixed;
   width: 335px;
   background-color: var(--color-popup);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(5px);
   padding: 16px;
   z-index: 200;
   top: 100px;
@@ -292,11 +308,15 @@
   min-height: calc(100vh - 4px);
   margin-bottom: 2px;
   overflow: visible;
-  background-color: var(--color-red);
+  background-color: var(--color-bg);
   font-size: var(--text-base);
   font-weight: var(--weight-bold);
   z-index: 150;
   padding: 12px;
+}
+
+.popup-about.is-open {
+  display: block;
 }
 
 .popup-about::after {

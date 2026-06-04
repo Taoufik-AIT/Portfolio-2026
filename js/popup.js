@@ -13,20 +13,27 @@ navAbout.addEventListener('click', function(event) {
 document.addEventListener('click', function(event) {
 
   if (state.isAboutOpen) {
-    if (event.target.closest('a, summary, button, .accordion__content')) return
+    if (event.target.closest('a, summary, button, .accordion__content, .separator')) return
     popupAbout.classList.remove('is-open')
     overlay.classList.remove('is-open')
     state.isAboutOpen = false
     return
   }
 
-  if (event.target.closest('.nav, .carousel, .popup-project, .project__cta')) return
+  if (state.isPopupOpen) {
+    popupProject.classList.remove('is-open')
+    overlay.classList.remove('is-open')
+    state.isPopupOpen = false
+    return
+  }
+
+  // Zones interdites pour ouvrir le popup-project
+  if (event.target.closest('.nav, .carousel, .project__cta')) return
   
-  // Positionner le popup à la position du clic
   popupProject.style.left = event.clientX + 'px'
   popupProject.style.top = event.clientY + 'px'
   
-  const isOpen = popupProject.classList.toggle('is-open')
-  overlay.classList.toggle('is-open')
-  state.isPopupOpen = isOpen
+  popupProject.classList.add('is-open')
+  overlay.classList.add('is-open')
+  state.isPopupOpen = true
 })

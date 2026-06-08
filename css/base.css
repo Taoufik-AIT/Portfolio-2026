@@ -59,6 +59,7 @@
     font-family: var(--font-main);
     font-size: var(--text-base);
     line-height: var(--leading-normal);
+    cursor : none;
   }
 
   body::-webkit-scrollbar {

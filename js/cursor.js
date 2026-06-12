@@ -6,7 +6,7 @@ window.addEventListener('mousemove', function(event) {
   cursor.style.left = event.clientX + 'px'
   cursor.style.top = event.clientY + 'px'
 
-  if (state.isPopupOpen) {
+  if (state.isPopupOpen || state.isAboutOpen) {
     const pw = popupProject.offsetWidth
     const ph = popupProject.offsetHeight
     const margin = 20
@@ -19,5 +19,8 @@ window.addEventListener('mousemove', function(event) {
 
     popupProject.style.left = x + 'px'
     popupProject.style.top = y + 'px'
+    barV.style.display = 'none'
+  } else {
+    barV.style.display = 'block'
   }
 })

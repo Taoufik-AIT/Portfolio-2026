@@ -8,6 +8,7 @@ function closeAbout() {
   overlay.classList.remove('is-open')
   state.isAboutOpen = false
   document.querySelectorAll('.accordion__item').forEach(d => d.removeAttribute('open'))
+  window.setCursorState(false)
 }
 
 navAbout.addEventListener('click', function(event) {
@@ -15,6 +16,7 @@ navAbout.addEventListener('click', function(event) {
   const isOpen = popupAbout.classList.toggle('is-open')
   overlay.classList.toggle('is-open')
   state.isAboutOpen = isOpen
+  window.setCursorState(isOpen)
 })
 
 document.addEventListener('click', function(event) {
@@ -30,16 +32,16 @@ document.addEventListener('click', function(event) {
     popupProject.classList.remove('is-open')
     overlay.classList.remove('is-open')
     state.isPopupOpen = false
+    window.setCursorState(false)
     return
   }
 
-  // Zones interdites pour ouvrir le popup-project
   if (event.target.closest('.nav, .carousel, .project__cta')) return
-  
   
   popupProject.classList.add('is-open')
   overlay.classList.add('is-open')
   state.isPopupOpen = true
+  window.setCursorState(true)
 
   const pw = popupProject.offsetWidth
   const ph = popupProject.offsetHeight
@@ -53,6 +55,4 @@ document.addEventListener('click', function(event) {
 
   popupProject.style.left = x + 'px'
   popupProject.style.top = y + 'px'
-  
 })
-

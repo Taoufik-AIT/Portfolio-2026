@@ -1,12 +1,21 @@
 const cursor = document.querySelector('.cursor')
 const barV = document.querySelector('.cursor__bar--v')
+const barH = document.querySelector('.cursor__bar--h')
+
+window.setCursorState = function(isOpen) {
+  const rotation = isOpen ? 'translate(-50%, -50%) rotate(45deg)' : 'translate(-50%, -50%)'
+  barV.style.transform = rotation
+  barH.style.transform = rotation
+}
+
+window.setCursorState(false)
 
 window.addEventListener('mousemove', function(event) {
   cursor.style.display = 'block'
   cursor.style.left = event.clientX + 'px'
   cursor.style.top = event.clientY + 'px'
 
-  if (state.isPopupOpen || state.isAboutOpen) {
+  if (state.isPopupOpen) {
     const pw = popupProject.offsetWidth
     const ph = popupProject.offsetHeight
     const margin = 20
@@ -19,8 +28,5 @@ window.addEventListener('mousemove', function(event) {
 
     popupProject.style.left = x + 'px'
     popupProject.style.top = y + 'px'
-    barV.style.display = 'none'
-  } else {
-    barV.style.display = 'block'
   }
 })

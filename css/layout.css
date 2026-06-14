@@ -421,7 +421,6 @@
   align-items: center;
   padding: 5px 0;
   gap: var(--about-gap);
-  cursor: pointer;
   list-style: none;
 }
 

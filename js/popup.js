@@ -36,7 +36,7 @@ document.addEventListener('click', function(event) {
     return
   }
 
-  if (event.target.closest('.nav, .carousel, .project__cta')) return
+  if (event.target.closest('.nav__logo, .carousel, .project__cta, .nav__about, .nav__chat-wrapper')) return
   
   popupProject.classList.add('is-open')
   overlay.classList.add('is-open')

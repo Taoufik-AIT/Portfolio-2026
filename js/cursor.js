@@ -30,3 +30,20 @@ window.addEventListener('mousemove', function(event) {
     popupProject.style.top = y + 'px'
   }
 })
+
+const hoverTargets = document.querySelectorAll('.nav__logo, .nav__links a, .nav__links button, .project__cta, .about__accordion, .about__link, .carousel')
+
+hoverTargets.forEach(function(el) {
+  el.addEventListener('mouseenter', function() {
+    cursor.style.width = '10px'
+    cursor.style.height = '10px'
+    barV.style.display = 'none'
+    barH.style.display = 'none'
+  })
+  el.addEventListener('mouseleave', function() {
+    cursor.style.width = '57px'
+    cursor.style.height = '20px'
+    barV.style.display = 'block'
+    barH.style.display = 'block'
+  })
+})

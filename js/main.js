@@ -9,6 +9,7 @@ ro.observe(popupInner)
 const projects = [
   {
     name: 'Get Your Way',
+    url: 'https://getyourway.be',
     year: 2024,
     type: 'Design & Development',
     client: 'Get Your Way',
@@ -21,6 +22,7 @@ const projects = [
   
   {
     name: 'Adel&Adele',
+    url: 'https://adel-adele.fr',
     year: 2025,
     type: 'Design',
     client: 'Adel & Adele',
@@ -32,6 +34,7 @@ const projects = [
   },
   {
     name: 'Dimagin-Studio',
+    url: 'https://dimagin-studio.fr',
     year: 2023,
     type: 'Design & Development',
     client: 'Dimagin-Studio',
@@ -43,6 +46,7 @@ const projects = [
   },
   {
     name: 'Studio Fictif',
+    url: 'https://studiofictif.fr',
     year: 2026,
     type: 'Branding & Motion',
     client: 'Studio Fictif',
@@ -73,6 +77,7 @@ const popupYear           = document.querySelector('.popup__year')
 const projectDescription1 = document.querySelector('.popup__description:first-of-type')
 const projectDescription2 = document.querySelector('.popup__description:last-of-type')
 const previewImg          = document.querySelector('.preview__img')
+const projectCta          = document.querySelector('.project__cta')
 
 function updateProjectInfo() {
   const p = projects[state.activeIndex]
@@ -86,6 +91,7 @@ function updateProjectInfo() {
   popupYear.textContent           = p.year
   projectDescription1.textContent = p.description1
   projectDescription2.textContent = p.description2
+  projectCta.href                 = p.url
 }
 
 updateProjectInfo()
@@ -117,10 +123,12 @@ const copyWidth = natCenters[imgsPerCopy] - natCenters[0]
 const midRight = (natCenters[imgsPerCopy - 1]     + natCenters[imgsPerCopy])     / 2
 const midLeft  = (natCenters[2 * imgsPerCopy - 1] + natCenters[2 * imgsPerCopy]) / 2
 
-let targetX  = needleX - natCenters[imgsPerCopy]
-let currentX = needleX - natCenters[imgsPerCopy]
+let targetX   = needleX - natCenters[imgsPerCopy]
+let currentX  = needleX - natCenters[imgsPerCopy]
+let lastImgIdx = -1
 
 gsap.set(carouselTrack, { x: currentX })
+syncCarousel()
 
 function loopCheck() {
   while (needleX - currentX > midLeft) {
@@ -134,7 +142,6 @@ function loopCheck() {
 }
 
 // Ticker GSAP : lerp fluide + correction de boucle + rendu
-let lastImgIdx = -1
 
 gsap.ticker.add(function() {
   const prevX = currentX

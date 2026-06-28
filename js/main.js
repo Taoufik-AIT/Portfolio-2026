@@ -145,7 +145,7 @@ function loopCheck() {
 
 gsap.ticker.add(function() {
   const prevX = currentX
-  currentX += (targetX - currentX) * 0.12
+  currentX += (targetX - currentX) * 0.05
   loopCheck()
 
   if (Math.abs(currentX - prevX) > 0.01) {
@@ -182,7 +182,7 @@ function syncCarousel() {
 
 window.addEventListener('wheel', function(event) {
   if (state.isPopupOpen || state.isAboutOpen) return
-  targetX -= event.deltaY
+  targetX -= event.deltaY * 1.8
 })
 
 // ─── Drag carousel ────────────────────────────────────────────────────────────

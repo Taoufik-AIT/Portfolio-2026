@@ -10,8 +10,10 @@ window.setCursorState = function(isOpen) {
 
 window.setCursorState(false)
 
+var cursorVisible = false
+
 window.addEventListener('mousemove', function(event) {
-  cursor.style.display = 'block'
+  if (!cursorVisible) { cursor.style.display = 'block'; cursorVisible = true }
   cursor.style.left = event.clientX + 'px'
   cursor.style.top = event.clientY + 'px'
 

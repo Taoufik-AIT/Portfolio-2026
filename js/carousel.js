@@ -10,6 +10,7 @@ function updateSlider(activeIndex) {
 updateSlider(sliderIndex)
 
 setInterval(function() {
+  if (!state.isAboutOpen) return
   sliderIndex = (sliderIndex + 1) % sliderImages.length
   updateSlider(sliderIndex)
 }, 1000)

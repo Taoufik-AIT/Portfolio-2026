@@ -256,6 +256,32 @@ allImgs.forEach(function(img, i) {
 })
 
 
+// ─── Ticks du ruler ───────────────────────────────────────────────────────────
+
+const line = document.querySelector('.carousel__line')
+const TICK_SPACING = 5.5
+const TICK_COUNT = Math.ceil(window.innerWidth / TICK_SPACING) + 10
+const centerIdx = Math.floor(TICK_COUNT / 2)
+
+for (let i = 0; i < TICK_COUNT; i++) {
+  const tick = document.createElement('span')
+  tick.classList.add('carousel__tick')
+  line.appendChild(tick)
+}
+
+// On déplace la ligne pour que le tick central tombe exactement sous needleX.
+// Sans ça, la ligne part de x=0 et l'index calculé ne tombe pas pile sous le triangle.
+var centerTickCenter = centerIdx * TICK_SPACING + 0.25
+
+function positionTickLine() {
+  var cx = window.innerWidth / 2
+  line.style.transform = 'translateX(' + (cx - centerTickCenter) + 'px)'
+}
+
+positionTickLine()
+line.children[centerIdx].classList.add('carousel__tick--active')
+
+window.addEventListener('resize', positionTickLine)
 // ─── Dropdown ─────────────────────────────────────────────────────────────────
 
 const ctaButton = document.querySelector('.nav__cta')
@@ -264,18 +290,3 @@ const dropdown  = document.querySelector('.nav__dropdown')
 ctaButton.addEventListener('click', function() {
   dropdown.classList.toggle('is-open')
 })
-
-// ─── Ticks du ruler ───────────────────────────────────────────────────────────
-
-const line = document.querySelector('.carousel__line')
-
-let totalTicks = Math.floor(window.innerWidth / 5)
-if (totalTicks % 2 === 0) totalTicks--
-const centerIndex = Math.floor(totalTicks / 2)
-
-for (let i = 0; i < totalTicks; i++) {
-  const tick = document.createElement('span')
-  tick.classList.add('carousel__tick')
-  if (i === centerIndex) tick.classList.add('carousel__tick--active')
-  line.appendChild(tick)
-}

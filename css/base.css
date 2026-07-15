@@ -8,9 +8,10 @@
 
 :root {
     /* Couleurs */
-    --color-bg: #F4F4F5;
+    --color-bg: #EEEEF1;
     --color-dark: #191919;
     --color-gray: #979797;
+    --color-gray-light: #C4C4C4;
     --color-red: #E14942;
     --color-popup: rgba(25, 25, 25, 0.85);
   

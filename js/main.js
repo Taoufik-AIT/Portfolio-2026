@@ -114,8 +114,9 @@ const natCenters = allImgs.map(function(img) {
   return r.left + r.width / 2
 })
 
-const needleX   = window.innerWidth / 2
-const copyWidth = natCenters[imgsPerCopy] - natCenters[0]
+let needleX        = window.innerWidth / 2
+const copyWidth    = natCenters[imgsPerCopy] - natCenters[0]
+const TICK_SPACING = 5.5
 
 // Seuils de boucle : milieu du gap entre la dernière image d'une copie
 // et la première de la suivante. Téléporter depuis midLeft → on atterrit
@@ -123,12 +124,13 @@ const copyWidth = natCenters[imgsPerCopy] - natCenters[0]
 const midRight = (natCenters[imgsPerCopy - 1]     + natCenters[imgsPerCopy])     / 2
 const midLeft  = (natCenters[2 * imgsPerCopy - 1] + natCenters[2 * imgsPerCopy]) / 2
 
-let targetX   = needleX - natCenters[imgsPerCopy]
-let currentX  = needleX - natCenters[imgsPerCopy]
+let targetX  = needleX - Math.round(natCenters[imgsPerCopy] / TICK_SPACING) * TICK_SPACING
+let currentX = targetX
 let lastImgIdx = -1
 
 gsap.set(carouselTrack, { x: currentX })
 syncCarousel()
+updateImageContrast(state.activeIndex)
 
 function loopCheck() {
   while (needleX - currentX > midLeft) {
@@ -151,6 +153,7 @@ gsap.ticker.add(function() {
   if (Math.abs(currentX - prevX) > 0.01) {
     gsap.set(carouselTrack, { x: currentX })
     syncCarousel()
+    moveTicks()
   }
 })
 
@@ -175,7 +178,19 @@ function syncCarousel() {
   if (pIndex !== state.activeIndex) {
     state.activeIndex = pIndex
     updateProjectInfo()
+    updateImageContrast(pIndex)
   }
+}
+
+function updateImageContrast(activeProject) {
+  allImgs.forEach(function(img) {
+    var imgProject = parseInt(img.closest('.carousel__group').dataset.project || 0)
+    gsap.to(img, { 
+      filter: imgProject === activeProject ? 'brightness(1)' : 'brightness(0.4)',
+      duration: 0.4,
+      ease: 'power2.out'
+    })
+  })
 }
 
 // ─── Wheel ────────────────────────────────────────────────────────────────────
@@ -209,20 +224,7 @@ window.addEventListener('mousemove', function(event) {
 window.addEventListener('mouseup', function() {
   if (!carouselDragging) return
   carouselDragging = false
-  if (carouselMoved) snapToNearest()
 })
-
-function snapToNearest() {
-  const target = needleX - currentX
-  let best = imgsPerCopy, bestDist = Infinity
-
-  for (let i = imgsPerCopy; i < 2 * imgsPerCopy; i++) {
-    const dist = Math.abs(natCenters[i] - target)
-    if (dist < bestDist) { bestDist = dist; best = i }
-  }
-
-  targetX = needleX - natCenters[best]
-}
 
 // ─── Clic image → centrer sous l'aiguille ────────────────────────────────────
 
@@ -258,30 +260,107 @@ allImgs.forEach(function(img, i) {
 
 // ─── Ticks du ruler ───────────────────────────────────────────────────────────
 
-const line = document.querySelector('.carousel__line')
-const TICK_SPACING = 5.5
-const TICK_COUNT = Math.ceil(window.innerWidth / TICK_SPACING) + 10
-const centerIdx = Math.floor(TICK_COUNT / 2)
+const line       = document.querySelector('.carousel__line')
+const TICK_COUNT = Math.ceil((window.innerWidth - (needleX - midLeft)) / TICK_SPACING) + 10
 
+const allTicks = []
 for (let i = 0; i < TICK_COUNT; i++) {
   const tick = document.createElement('span')
   tick.classList.add('carousel__tick')
   line.appendChild(tick)
+  allTicks.push(tick)
 }
 
-// On déplace la ligne pour que le tick central tombe exactement sous needleX.
-// Sans ça, la ligne part de x=0 et l'index calculé ne tombe pas pile sous le triangle.
-var centerTickCenter = centerIdx * TICK_SPACING + 0.25
+const MAX_WAVE  = 20  // ← longueur de la vague (ticks visibles max en simultané)
+const waveQueue = []  // ticks actifs, du plus ancien au plus récent
+let lastCi = -1
 
-function positionTickLine() {
-  var cx = window.innerWidth / 2
-  line.style.transform = 'translateX(' + (cx - centerTickCenter) + 'px)'
+function returnTick(tick) {
+  tick._ret   = true
+  tick._tween = gsap.to(tick, {
+    keyframes: [
+      { height: 6, backgroundColor: '#C4C4C4', duration: 0.2, ease: 'power2.out' },
+      { backgroundColor: '#191919', duration: 0.05, ease: 'none' }
+    ],
+    overwrite: 'auto',
+    onComplete() {
+      tick._ret   = false
+      tick._tween = null
+      const i = waveQueue.indexOf(tick)
+      if (i !== -1) waveQueue.splice(i, 1)
+    }
+  })
 }
 
-positionTickLine()
-line.children[centerIdx].classList.add('carousel__tick--active')
+function activateAndReturn(tick) {
+  tick.style.height          = '16px'
+  tick.style.backgroundColor = '#E14942'
+  waveQueue.push(tick)
+  if (waveQueue.length > MAX_WAVE) {
+    const oldest = waveQueue.shift()
+    if (oldest._tween) oldest._tween.timeScale(6)  // queue pleine : le plus vieux finit vite, bord doux
+  }
+  returnTick(tick)
+}
 
-window.addEventListener('resize', positionTickLine)
+function moveTicks() {
+  line.style.transform = `translateX(${currentX}px)`
+
+  const ci = Math.round((needleX - currentX - 0.25) / TICK_SPACING)
+  if (ci < 0 || ci >= allTicks.length || ci === lastCi) return
+
+  if (lastCi >= 0 && lastCi < allTicks.length) {
+    const step = ci > lastCi ? 1 : -1
+    const gap  = Math.abs(ci - lastCi)
+
+    if (gap > 50) {
+      if (!allTicks[lastCi]._ret) activateAndReturn(allTicks[lastCi])
+    } else {
+      for (let j = lastCi; j !== ci; j += step) {
+        if (j < 0 || j >= allTicks.length) continue
+        const tick = allTicks[j]
+        if (tick._ret) continue
+        activateAndReturn(tick)
+      }
+    }
+  }
+
+  const ciTick = allTicks[ci]
+  ciTick._ret = false
+  if (ciTick._tween) { ciTick._tween.kill(); ciTick._tween = null }
+  const qi = waveQueue.indexOf(ciTick)
+  if (qi !== -1) waveQueue.splice(qi, 1)
+  ciTick.style.height          = '16px'
+  ciTick.style.backgroundColor = '#E14942'
+
+  lastCi = ci
+}
+
+moveTicks()
+
+window.addEventListener('resize', () => {
+  needleX = window.innerWidth / 2
+
+  waveQueue.forEach(tick => {
+    if (tick._tween) { tick._tween.kill(); tick._tween = null }
+    tick._ret = false
+    tick.style.height = ''
+    tick.style.backgroundColor = ''
+  })
+  waveQueue.length = 0
+
+  if (lastCi >= 0 && lastCi < allTicks.length) {
+    gsap.killTweensOf(allTicks[lastCi])
+    allTicks[lastCi].style.height = ''
+    allTicks[lastCi].style.backgroundColor = ''
+  }
+  lastCi = -1
+  const centeredIdx = lastImgIdx + imgsPerCopy
+  targetX = needleX - natCenters[centeredIdx]
+  currentX = targetX
+  gsap.set(carouselTrack, { x: currentX })
+  moveTicks()
+})
 // ─── Dropdown ─────────────────────────────────────────────────────────────────
 
 const ctaButton = document.querySelector('.nav__cta')

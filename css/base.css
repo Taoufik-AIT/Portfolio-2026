@@ -94,6 +94,14 @@
   letter-spacing: -0.5px;
 }
 
+.nav__about {
+  transition: color 0.3s ease;
+}
+
+.nav__about:hover {
+  color: var(--color-gray);
+}
+
 .nav__dropdown {
   background-color: var(--color-red);
 }

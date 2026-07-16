@@ -79,11 +79,19 @@ const projectDescription2 = document.querySelector('.popup__description:last-of-
 const previewImg          = document.querySelector('.preview__img')
 const projectCta          = document.querySelector('.project__cta')
 
+;[projectName, projectType, projectYear].forEach(function(el) {
+  const w = document.createElement('div')
+  w.style.overflow = 'hidden'
+  el.parentNode.insertBefore(w, el)
+  w.appendChild(el)
+})
+
+let scrollDir        = 1
+let projectInfoReady = false
+
 function updateProjectInfo() {
   const p = projects[state.activeIndex]
-  projectName.textContent         = p.name
-  projectType.textContent         = p.type
-  projectYear.textContent         = p.year
+
   projectClient.textContent       = p.client
   projectSector.textContent       = p.sector
   projectRole.textContent         = p.role
@@ -92,6 +100,31 @@ function updateProjectInfo() {
   projectDescription1.textContent = p.description1
   projectDescription2.textContent = p.description2
   projectCta.href                 = p.url
+
+  if (!projectInfoReady) {
+    projectName.textContent = p.name
+    projectType.textContent = p.type
+    projectYear.textContent = p.year
+    projectInfoReady = true
+    requestAnimationFrame(function() { projectType.classList.add('sep-visible') })
+    return
+  }
+
+  const outY = scrollDir === 1 ? '-105%' : '105%'
+  const inY  = scrollDir === 1 ?  '105%' : '-105%'
+
+  projectType.classList.remove('sep-visible')
+  gsap.killTweensOf([projectName, projectType, projectYear])
+  gsap.timeline()
+    .to([projectName, projectType, projectYear], { y: outY, duration: 0.28, ease: 'power2.in' })
+    .call(function() {
+      projectName.textContent = p.name
+      projectType.textContent = p.type
+      projectYear.textContent = p.year
+    })
+    .set([projectName, projectType, projectYear], { y: inY })
+    .to([projectName, projectType, projectYear], { y: 0, duration: 0.38, ease: 'power2.out', stagger: 0.06 })
+    .call(function() { projectType.classList.add('sep-visible') })
 }
 
 updateProjectInfo()
@@ -148,9 +181,11 @@ function loopCheck() {
 gsap.ticker.add(function() {
   const prevX = currentX
   currentX += (targetX - currentX) * 0.05
+  const lerpDelta = currentX - prevX
   loopCheck()
 
-  if (Math.abs(currentX - prevX) > 0.01) {
+  if (Math.abs(lerpDelta) > 0.01) {
+    scrollDir = lerpDelta < 0 ? 1 : -1
     gsap.set(carouselTrack, { x: currentX })
     syncCarousel()
     moveTicks()
@@ -197,7 +232,8 @@ function updateImageContrast(activeProject) {
 
 window.addEventListener('wheel', function(event) {
   if (state.isPopupOpen || state.isAboutOpen) return
-  targetX -= event.deltaY * 1.8
+  const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY
+  targetX -= delta * 1.8
 })
 
 // ─── Drag carousel ────────────────────────────────────────────────────────────

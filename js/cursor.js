@@ -14,8 +14,13 @@ var cursorVisible = false
 
 window.addEventListener('mousemove', function(event) {
   if (!cursorVisible) { cursor.style.display = 'block'; cursorVisible = true }
-  cursor.style.left = event.clientX + 'px'
-  cursor.style.top = event.clientY + 'px'
+  gsap.to(cursor, {
+    left: event.clientX,
+    top: event.clientY,
+    duration: 0.48,
+    ease: 'power3.out',
+    overwrite: 'auto'
+  })
 
   if (state.isPopupOpen) {
     const pw = popupProject.offsetWidth
@@ -37,15 +42,11 @@ const hoverTargets = document.querySelectorAll('.nav__logo, .nav__links a, .nav_
 
 hoverTargets.forEach(function(el) {
   el.addEventListener('mouseenter', function() {
-    cursor.style.width = '10px'
-    cursor.style.height = '10px'
-    barV.style.display = 'none'
-    barH.style.display = 'none'
+    gsap.to(cursor, { width: 10, height: 10, duration: 0.35, ease: 'power3.out', overwrite: 'auto' })
+    gsap.to([barV, barH], { opacity: 0, duration: 0.1, ease: 'power2.out', overwrite: 'auto' })
   })
   el.addEventListener('mouseleave', function() {
-    cursor.style.width = '57px'
-    cursor.style.height = '20px'
-    barV.style.display = 'block'
-    barH.style.display = 'block'
+    gsap.to(cursor, { width: 57, height: 20, duration: 0.3, ease: 'power3.out', overwrite: 'auto' })
+    gsap.to([barV, barH], { opacity: 1, duration: 0.2, ease: 'power2.out', overwrite: 'auto' })
   })
 })

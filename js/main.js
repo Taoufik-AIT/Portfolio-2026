@@ -54,7 +54,7 @@ const projects = [
     role: 'Art Director',
     scope: 'Branding / Motion / Web',
     description1: 'A fictitious creative studio project exploring brand identity and motion design. The goal was to build a cohesive visual language that spans digital and print, with a strong typographic system and animated brand elements.',
-    description2: 'The project showcases a minimal but expressive design approach, combining bold typography with subtle motion to create a memorable brand experience that works across every touchpoint.',
+    description2: 'The project focused on clear product presentation, intuitive navigation, and a streamlined checkout flow to improve usability and conversion. The interface was designed to highlight the brand while maintaining a clean and scalable design system.',
   },
 ]
 
@@ -231,10 +231,11 @@ function updateImageContrast(activeProject) {
 // ─── Wheel ────────────────────────────────────────────────────────────────────
 
 window.addEventListener('wheel', function(event) {
+  if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) event.preventDefault()
   if (state.isPopupOpen || state.isAboutOpen) return
   const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY
   targetX -= delta * 1.8
-})
+}, { passive: false })
 
 // ─── Drag carousel ────────────────────────────────────────────────────────────
 
@@ -315,7 +316,7 @@ function returnTick(tick) {
   tick._ret   = true
   tick._tween = gsap.to(tick, {
     keyframes: [
-      { height: 6, backgroundColor: '#C4C4C4', duration: 0.2, ease: 'power2.out' },
+      { scaleY: 0.375, backgroundColor: '#C4C4C4', duration: 0.2, ease: 'power2.out' },
       { backgroundColor: '#191919', duration: 0.05, ease: 'none' }
     ],
     overwrite: 'auto',
@@ -329,8 +330,7 @@ function returnTick(tick) {
 }
 
 function activateAndReturn(tick) {
-  tick.style.height          = '16px'
-  tick.style.backgroundColor = '#E14942'
+  gsap.set(tick, { scaleY: 1, backgroundColor: '#E14942' })
   waveQueue.push(tick)
   if (waveQueue.length > MAX_WAVE) {
     const oldest = waveQueue.shift()
@@ -366,8 +366,7 @@ function moveTicks() {
   if (ciTick._tween) { ciTick._tween.kill(); ciTick._tween = null }
   const qi = waveQueue.indexOf(ciTick)
   if (qi !== -1) waveQueue.splice(qi, 1)
-  ciTick.style.height          = '16px'
-  ciTick.style.backgroundColor = '#E14942'
+  gsap.set(ciTick, { scaleY: 1, backgroundColor: '#E14942' })
 
   lastCi = ci
 }
@@ -380,15 +379,13 @@ window.addEventListener('resize', () => {
   waveQueue.forEach(tick => {
     if (tick._tween) { tick._tween.kill(); tick._tween = null }
     tick._ret = false
-    tick.style.height = ''
-    tick.style.backgroundColor = ''
+    gsap.set(tick, { clearProps: 'transform,backgroundColor' })
   })
   waveQueue.length = 0
 
   if (lastCi >= 0 && lastCi < allTicks.length) {
     gsap.killTweensOf(allTicks[lastCi])
-    allTicks[lastCi].style.height = ''
-    allTicks[lastCi].style.backgroundColor = ''
+    gsap.set(allTicks[lastCi], { clearProps: 'transform,backgroundColor' })
   }
   lastCi = -1
   const centeredIdx = lastImgIdx + imgsPerCopy

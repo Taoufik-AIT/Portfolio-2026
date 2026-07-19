@@ -87,7 +87,8 @@ function closePopup() {
 
   gsap.delayedCall(0.5, () => window.setCursorState(false))
 
-  gsap.to(overlay, { opacity: 0, duration: 0.4, ease: 'power2.out', onComplete: () => overlay.classList.remove('is-open') })
+  gsap.killTweensOf(overlay)
+  gsap.to(overlay, { opacity: 0, duration: 0.7, delay: 0.4, ease: 'power2.out', onComplete: () => overlay.classList.remove('is-open') })
 
   gsap.to(popupProject, {
     clipPath: 'inset(0 0 100% 0)',
@@ -105,9 +106,10 @@ function closePopup() {
 
 function closeAbout() {
   popupAbout.classList.remove('is-open')
-  gsap.to(overlay, { opacity: 0, duration: 0.4, ease: 'power2.out', onComplete: () => overlay.classList.remove('is-open') })
+  gsap.killTweensOf(overlay)
+  gsap.to(overlay, { opacity: 0, duration: 0.7, delay: 0.4, ease: 'power2.out', onComplete: () => overlay.classList.remove('is-open') })
   state.isAboutOpen = false
-  document.querySelectorAll('.accordion__item').forEach(d => d.removeAttribute('open'))
+  accordionItems.forEach(function(item) { item.removeAttribute('open') })
   window.setCursorState(false)
 }
 
@@ -117,12 +119,18 @@ navAbout.addEventListener('click', event => {
   state.isAboutOpen = isOpen
   window.setCursorState(isOpen)
   if (isOpen) {
+    gsap.killTweensOf(overlay)
     overlay.classList.add('is-open')
     gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' })
   } else {
-    gsap.to(overlay, { opacity: 0, duration: 0.4, ease: 'power2.out', onComplete: () => overlay.classList.remove('is-open') })
+    gsap.killTweensOf(overlay)
+    gsap.to(overlay, { opacity: 0, duration: 0.7, delay: 0.2, ease: 'power2.out', onComplete: () => overlay.classList.remove('is-open') })
   }
 })
+
+// ─── Accordion ────────────────────────────────────────────────────────────────
+
+const accordionItems = Array.from(popupAbout.querySelectorAll('.accordion__item'))
 
 // ─── Clicks globaux ───────────────────────────────────────────────────────────
 
@@ -144,6 +152,7 @@ document.addEventListener('click', event => {
   if (event.target.closest('.nav__logo, .carousel, .project__cta, .nav__about, .nav__chat-wrapper')) return
 
   state.isPopupOpen = true
+  gsap.killTweensOf(overlay)
   overlay.classList.add('is-open')
   gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' })
   window.setCursorState(true)

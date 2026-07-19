@@ -20,7 +20,7 @@ window.setCursorState(false)
 
 gsap.set(cursor, { xPercent: -50, yPercent: -50 })
 
-var cursorVisible = false
+let cursorVisible = false
 
 window.addEventListener('mousemove', function(event) {
   if (!cursorVisible) { cursor.style.display = 'block'; cursorVisible = true }
@@ -51,13 +51,17 @@ const hoverTargets = document.querySelectorAll('.nav__logo, .nav__links a, .nav_
 
 hoverTargets.forEach(function(el) {
   el.addEventListener('mouseenter', function() {
-    if (cursor.classList.contains('is-open')) return
     gsap.to(cursor, { width: 10, height: 10, duration: 0.35, ease: 'power3.out', overwrite: 'auto' })
     gsap.to([barV, barH], { opacity: 0, duration: 0.1, ease: 'power2.out', overwrite: 'auto' })
   })
   el.addEventListener('mouseleave', function() {
-    if (cursor.classList.contains('is-open')) return
-    gsap.to(cursor, { width: 57, height: 20, duration: 0.3, ease: 'power3.out', overwrite: 'auto' })
+    gsap.to(cursor, {
+      width: cursor.classList.contains('is-open') ? 20 : 57,
+      height: 20,
+      duration: 0.3,
+      ease: 'power3.out',
+      overwrite: 'auto'
+    })
     gsap.to([barV, barH], { opacity: 1, duration: 0.2, ease: 'power2.out', overwrite: 'auto' })
   })
 })

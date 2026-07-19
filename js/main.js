@@ -64,6 +64,8 @@ const state = {
   isAboutOpen: false,
 }
 
+let prevActiveProject = null
+
 // ─── DOM ──────────────────────────────────────────────────────────────────────
 
 const projectName         = document.querySelector('.project__name')
@@ -162,6 +164,7 @@ let currentX = targetX
 let lastImgIdx = -1
 
 gsap.set(carouselTrack, { x: currentX })
+gsap.set(allImgs, { filter: 'brightness(0.4)' })
 syncCarousel()
 updateImageContrast(state.activeIndex)
 
@@ -218,14 +221,22 @@ function syncCarousel() {
 }
 
 function updateImageContrast(activeProject) {
+  if (activeProject === prevActiveProject) return
+
   allImgs.forEach(function(img) {
-    var imgProject = parseInt(img.closest('.carousel__group').dataset.project || 0)
-    gsap.to(img, { 
-      filter: imgProject === activeProject ? 'brightness(1)' : 'brightness(0.4)',
+    const imgProject    = parseInt(img.closest('.carousel__group').dataset.project || 0)
+    const shouldBeActive = imgProject === activeProject
+    const wasActive      = imgProject === prevActiveProject
+    if (shouldBeActive === wasActive) return
+    gsap.to(img, {
+      filter: shouldBeActive ? 'brightness(1)' : 'brightness(0.4)',
       duration: 0.4,
-      ease: 'power2.out'
+      ease: 'power2.out',
+      overwrite: 'auto'
     })
   })
+
+  prevActiveProject = activeProject
 }
 
 // ─── Wheel ────────────────────────────────────────────────────────────────────

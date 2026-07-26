@@ -62,6 +62,7 @@ const state = {
   activeIndex: 0,
   isPopupOpen: false,
   isAboutOpen: false,
+  isLoading: true,
 }
 
 let prevActiveProject = null
@@ -78,8 +79,16 @@ const projectScope        = document.querySelector('.popup__scope')
 const popupYear           = document.querySelector('.popup__year')
 const projectDescription1 = document.querySelector('.popup__description:first-of-type')
 const projectDescription2 = document.querySelector('.popup__description:last-of-type')
-const previewImg          = document.querySelector('.preview__img')
-const projectCta          = document.querySelector('.project__cta')
+const previewImgs  = Array.from(document.querySelectorAll('.preview__img'))
+let   activeImgIdx       = 0
+let   transitionToken    = 0
+let   clipTransitionLock = false
+const projectCta      = document.querySelector('.project__cta')
+
+gsap.set(previewImgs[0], { zIndex: 1 })
+gsap.set(previewImgs[1], { zIndex: 0 })
+
+
 
 ;[projectName, projectType, projectYear].forEach(function(el) {
   const w = document.createElement('div')
@@ -140,14 +149,28 @@ const carouselTrack = document.querySelector('.carousel__track')
 const originalHTML = carouselTrack.innerHTML
 carouselTrack.innerHTML = originalHTML + originalHTML + originalHTML
 
+// Séparateurs réels — remplacent les ::after pour que GSAP puisse les animer
+document.querySelectorAll('.carousel__group').forEach(function(group) {
+  const sep = document.createElement('div')
+  sep.className = 'carousel__separator'
+  group.after(sep)
+})
+
 const allImgs     = Array.from(document.querySelectorAll('.carousel__img'))
 const imgsPerCopy = allImgs.length / 3
+
+const imgProjectMap = new Map()
+allImgs.forEach(function(img) {
+  const group = img.closest('.carousel__group')
+  imgProjectMap.set(img, parseInt(group.dataset.project || 0))
+})
 
 // Centres naturels avant tout transform
 const natCenters = allImgs.map(function(img) {
   const r = img.getBoundingClientRect()
   return r.left + r.width / 2
 })
+
 
 let needleX        = window.innerWidth / 2
 const copyWidth    = natCenters[imgsPerCopy] - natCenters[0]
@@ -170,36 +193,49 @@ updateImageContrast(state.activeIndex)
 
 function loopCheck() {
   while (needleX - currentX > midLeft) {
-    currentX += copyWidth
-    targetX  += copyWidth
+    currentX      += copyWidth
+    targetX       += copyWidth
+    if (carouselDragging) carouselStartX += copyWidth
   }
   while (needleX - currentX < midRight) {
-    currentX -= copyWidth
-    targetX  -= copyWidth
+    currentX      -= copyWidth
+    targetX       -= copyWidth
+    if (carouselDragging) carouselStartX -= copyWidth
   }
 }
 
 // Ticker GSAP : lerp fluide + correction de boucle + rendu
+gsap.ticker.lagSmoothing(0)
 
 gsap.ticker.add(function() {
   const prevX = currentX
-  currentX += (targetX - currentX) * 0.05
+  currentX += (targetX - currentX) * 0.02
   const lerpDelta = currentX - prevX
   loopCheck()
 
   if (Math.abs(lerpDelta) > 0.01) {
     scrollDir = lerpDelta < 0 ? 1 : -1
     gsap.set(carouselTrack, { x: currentX })
-    syncCarousel()
+    if (!state.isPopupOpen && !state.isAboutOpen) syncCarousel()
     moveTicks()
   }
 })
 
+function decodeOrLoad(img) {
+  if (img.complete && img.naturalWidth > 0) return Promise.resolve()
+  if (typeof img.decode === 'function') return img.decode()
+  return new Promise(function(resolve) {
+    img.onload  = resolve
+    img.onerror = resolve
+  })
+}
+
 function syncCarousel() {
+  if (clipTransitionLock) return
+
   const target = needleX - currentX
   let best = 0, bestDist = Infinity
 
-  // Chercher dans la copie 2 uniquement (indices imgsPerCopy à 2×imgsPerCopy-1)
   for (let i = imgsPerCopy; i < 2 * imgsPerCopy; i++) {
     const dist = Math.abs(natCenters[i] - target)
     if (dist < bestDist) { bestDist = dist; best = i - imgsPerCopy }
@@ -208,15 +244,72 @@ function syncCarousel() {
   if (best === lastImgIdx) return
   lastImgIdx = best
 
-  previewImg.src = allImgs[best].src
-
-  const group  = allImgs[best].closest('.carousel__group')
-  const pIndex = parseInt(group.dataset.project || 0)
+  const pIndex = imgProjectMap.get(allImgs[best])
 
   if (pIndex !== state.activeIndex) {
+    const nextIdx   = 1 - activeImgIdx
+    const nextImg   = previewImgs[nextIdx]
+    const currImg   = previewImgs[activeImgIdx]
+    const clipStart = scrollDir === 1 ? 'inset(0% 0% 0% 100%)' : 'inset(0% 100% 0% 0%)'
+    const xStart    = scrollDir === 1 ? 25 : -25
+
+    transitionToken++
+    const myToken = transitionToken
+    clipTransitionLock = true
+
+    gsap.killTweensOf([nextImg, currImg])
+    nextImg.src = allImgs[best].src
+    gsap.set(nextImg, { zIndex: 2, opacity: 1, scale: 1, x: xStart, clipPath: clipStart })
+    gsap.set(currImg, { zIndex: 1, opacity: 1, scale: 1, x: 0,      clipPath: 'inset(0% 0% 0% 0%)' })
+
+    activeImgIdx      = nextIdx
     state.activeIndex = pIndex
     updateProjectInfo()
     updateImageContrast(pIndex)
+
+    function reveal() {
+      if (myToken !== transitionToken) {
+        clipTransitionLock = false
+        return
+      }
+      const xCurrEnd = scrollDir === 1 ? -20 : 20
+      gsap.to(nextImg, {
+        clipPath: 'inset(0% 0% 0% 0%)',
+        x: 0,
+        duration: 0.7,
+        ease: 'power2.out',
+        onComplete: function() {
+          clipTransitionLock = false
+          syncCarousel()
+        }
+      })
+      gsap.to(currImg, { x: xCurrEnd, duration: 0.5, ease: 'power2.out' })
+    }
+    decodeOrLoad(nextImg).then(reveal, reveal)
+
+  } else {
+    const nextIdx = 1 - activeImgIdx
+    const nextImg = previewImgs[nextIdx]
+    const currImg = previewImgs[activeImgIdx]
+
+    transitionToken++
+    const myToken = transitionToken
+
+    gsap.killTweensOf([nextImg, currImg])
+    gsap.set(nextImg, { zIndex: 2, scale: 1.1, opacity: 0, x: 0, clipPath: 'inset(0% 0% 0% 0%)' })
+    gsap.set(currImg, { zIndex: 1, scale: 1,   opacity: 1, x: 0, clipPath: 'inset(0% 0% 0% 0%)' })
+
+    nextImg.src  = allImgs[best].src
+
+    function revealSame() {
+      if (myToken !== transitionToken) return
+      activeImgIdx = nextIdx
+      gsap.timeline()
+        .to(nextImg, { scale: 1,    opacity: 1, duration: 0.5, ease: 'power2.out' }, 0)
+        .to(currImg, { scale: 1.04,             duration: 0.9, ease: 'power2.out' }, 0)
+        .to(currImg, { opacity: 0,              duration: 0.5, ease: 'power2.in', delay: 0.3 }, 0)
+    }
+    decodeOrLoad(nextImg).then(revealSame, revealSame)
   }
 }
 
@@ -224,7 +317,7 @@ function updateImageContrast(activeProject) {
   if (activeProject === prevActiveProject) return
 
   allImgs.forEach(function(img) {
-    const imgProject    = parseInt(img.closest('.carousel__group').dataset.project || 0)
+    const imgProject    = imgProjectMap.get(img)
     const shouldBeActive = imgProject === activeProject
     const wasActive      = imgProject === prevActiveProject
     if (shouldBeActive === wasActive) return
@@ -243,7 +336,7 @@ function updateImageContrast(activeProject) {
 
 window.addEventListener('wheel', function(event) {
   if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) event.preventDefault()
-  if (state.isPopupOpen || state.isAboutOpen) return
+  if (state.isLoading || state.isPopupOpen || state.isAboutOpen) return
   const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY
   targetX -= delta * 1.8
 }, { passive: false })
@@ -256,6 +349,8 @@ let carouselStartX    = 0
 let carouselMoved     = false
 
 carouselEl.addEventListener('mousedown', function(event) {
+  if (state.isLoading) return
+  targetX           = currentX
   carouselDragging  = true
   carouselMoved     = false
   carouselDragStart = event.clientX
@@ -383,27 +478,33 @@ function moveTicks() {
 }
 
 moveTicks()
+gsap.set(allTicks, { scaleY: 0 })
+if (window.onTicksReady) window.onTicksReady()
 
+let resizeTimer
 window.addEventListener('resize', () => {
-  needleX = window.innerWidth / 2
+  clearTimeout(resizeTimer)
+  resizeTimer = setTimeout(function() {
+    needleX = window.innerWidth / 2
 
-  waveQueue.forEach(tick => {
-    if (tick._tween) { tick._tween.kill(); tick._tween = null }
-    tick._ret = false
-    gsap.set(tick, { clearProps: 'transform,backgroundColor' })
-  })
-  waveQueue.length = 0
+    waveQueue.forEach(tick => {
+      if (tick._tween) { tick._tween.kill(); tick._tween = null }
+      tick._ret = false
+      gsap.set(tick, { clearProps: 'transform,backgroundColor' })
+    })
+    waveQueue.length = 0
 
-  if (lastCi >= 0 && lastCi < allTicks.length) {
-    gsap.killTweensOf(allTicks[lastCi])
-    gsap.set(allTicks[lastCi], { clearProps: 'transform,backgroundColor' })
-  }
-  lastCi = -1
-  const centeredIdx = lastImgIdx + imgsPerCopy
-  targetX = needleX - natCenters[centeredIdx]
-  currentX = targetX
-  gsap.set(carouselTrack, { x: currentX })
-  moveTicks()
+    if (lastCi >= 0 && lastCi < allTicks.length) {
+      gsap.killTweensOf(allTicks[lastCi])
+      gsap.set(allTicks[lastCi], { clearProps: 'transform,backgroundColor' })
+    }
+    lastCi = -1
+    const centeredIdx = lastImgIdx + imgsPerCopy
+    targetX = needleX - natCenters[centeredIdx]
+    currentX = targetX
+    gsap.set(carouselTrack, { x: currentX })
+    moveTicks()
+  }, 100)
 })
 // ─── Dropdown ─────────────────────────────────────────────────────────────────
 

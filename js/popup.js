@@ -7,6 +7,8 @@ const navAbout     = document.querySelector('.nav__about')
 
 // ─── Éléments ─────────────────────────────────────────────────────────────────
 
+const cursorArrows = document.querySelectorAll('.cursor__arrow')
+
 const popupTitle = popupProject.querySelector('.popup__title')
 const popupDescs = Array.from(popupProject.querySelectorAll('.popup__description'))
 const separators = Array.from(popupProject.querySelectorAll('.popup__separator'))
@@ -25,46 +27,20 @@ let aboutTriggers = []
 let aboutOpenTl   = null
 
 function openAbout() {
+  gsap.killTweensOf(cursorArrows)
+  gsap.set(cursorArrows, { opacity: 0 })
+  gsap.to(cursorArrows, { opacity: 1, duration: 0.35, delay: 0.7, ease: 'power2.out' })
+
   if (aboutOpenTl) { aboutOpenTl.kill(); aboutOpenTl = null }
   aboutSplits.forEach(function(s) { s.split.revert() })
   aboutSplits = []
   aboutTriggers.forEach(function(t) { t.kill() })
   aboutTriggers = []
 
-  gsap.set(popupAbout, { display: 'block', clipPath: 'inset(100% 0 0 0)' })
+  gsap.set(popupAbout, { display: 'block', clipPath: 'inset(100% 0% 0% 0%)' })
   if (window.lenis) window.lenis.resize()
 
-  const portrait = popupAbout.querySelector('.about__portrait')
-  const caption  = popupAbout.querySelector('.about__portrait-caption')
-
-  // Separators: outer (direct children of inner wrapper) + accordion-level
-  const innerEl   = popupAbout.querySelector('.popup-about__inner')
-  const outerSeps = Array.from(innerEl.children).filter(function(el) { return el.classList.contains('separator') })
-  const allSeps   = Array.from(popupAbout.querySelectorAll('.separator'))
-
-  // Sections (About me, My approach)
-  const sections = Array.from(popupAbout.querySelectorAll('.about__section')).map(function(sec) {
-    return {
-      label:  sec.querySelector('.about__label'),
-      number: sec.querySelector('.about__number'),
-      slider: sec.querySelector('.approach__slider'),
-      paras:  Array.from(sec.querySelectorAll('.about__text p'))
-    }
-  })
-
-  // Accordion items
-  const accordionEls  = Array.from(popupAbout.querySelectorAll('.accordion__item'))
-  const accordionData = accordionEls.map(function(item) {
-    const sib = item.nextElementSibling
-    return {
-      letter: item.querySelector('.accordion__letter'),
-      title:  item.querySelector('.accordion__title'),
-      icon:   item.querySelector('.accordion__icon'),
-      sep:    sib && sib.classList.contains('separator') ? sib : null
-    }
-  })
-
-  // ─── SplitText ─────────────────────────────────────────────────────────────
+  // ─── SplitText (recréé à chaque ouverture) ─────────────────────────────────
 
   function doSplit(el) {
     if (!el) return null
@@ -73,26 +49,30 @@ function openAbout() {
     return s
   }
 
-  const captionSplit = doSplit(caption)
+  const captionSplit = doSplit(aboutCaption)
 
-  sections.forEach(function(sec) {
+  aboutSections.forEach(function(sec) {
     sec.labelSplit  = doSplit(sec.label)
     sec.numberSplit = doSplit(sec.number)
     sec.parasSplits = sec.paras.map(function(p) { return doSplit(p) })
   })
 
-  accordionData.forEach(function(item) {
+  aboutAccordionData.forEach(function(item) {
     item.letterSplit = doSplit(item.letter)
     item.titleSplit  = doSplit(item.title)
   })
 
+  const linksLabelSplit = doSplit(aboutLinksLabel)
+  const linkSplits      = aboutLinkLabelEls.map(function(el) { return doSplit(el) })
+
   // ─── Initial states ─────────────────────────────────────────────────────────
 
-  if (portrait) gsap.set(portrait, { opacity: 0 })
-  sections.forEach(function(sec) { if (sec.slider) gsap.set(sec.slider, { opacity: 0 }) })
+  if (aboutPortrait) gsap.set(aboutPortrait, { opacity: 0 })
+  aboutSections.forEach(function(sec) { if (sec.slider) gsap.set(sec.slider, { opacity: 0 }) })
   aboutSplits.forEach(function(s) { gsap.set(s.split.lines, { yPercent: 100 }) })
-  gsap.set(allSeps, { scaleX: 0, transformOrigin: 'left center' })
-  gsap.set(Array.from(popupAbout.querySelectorAll('.accordion__icon')), { opacity: 0 })
+  gsap.set(aboutAllSeps, { scaleX: 0, transformOrigin: 'left center' })
+  gsap.set(aboutAccordionIcons, { opacity: 0 })
+  gsap.set(aboutLinkIconInners, { yPercent: 100 })
 
   ScrollTrigger.refresh()
 
@@ -103,12 +83,12 @@ function openAbout() {
   function animSep(sep) {
     if (!sep) return
     if (inVP(sep)) {
-      aboutOpenTl.to(sep, { scaleX: 1, duration: 0.5, ease: 'power2.out' }, t)
+      aboutOpenTl.to(sep, { scaleX: 1, duration: 0.9, ease: 'power2.out' }, t)
       t += 0.12
     } else {
       aboutTriggers.push(ScrollTrigger.create({
         trigger: sep, start: 'top 90%', once: true,
-        onEnter: function() { gsap.to(sep, { scaleX: 1, duration: 0.5, ease: 'power2.out' }) }
+        onEnter: function() { gsap.to(sep, { scaleX: 1, duration: 0.9, ease: 'power2.out' }) }
       }))
     }
   }
@@ -116,24 +96,19 @@ function openAbout() {
   // ─── Timeline ───────────────────────────────────────────────────────────────
 
   aboutOpenTl = gsap.timeline()
-  aboutOpenTl.to(popupAbout, { clipPath: 'inset(0% 0 0 0)', duration: 1.5, ease: 'power3.inOut' })
+  aboutOpenTl.to(popupAbout, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.5, ease: 'power3.inOut' })
 
-  // Portrait — fondu
-  if (portrait) {
-    aboutOpenTl.to(portrait, { opacity: 1, duration: 0.9, ease: 'power2.out' }, 0.35)
+  if (aboutPortrait) {
+    aboutOpenTl.to(aboutPortrait, { opacity: 1, duration: 0.9, ease: 'power2.out' }, 0.35)
   }
-  // Caption — avec le portrait, avant tout le reste
   if (captionSplit) {
     aboutOpenTl.to(captionSplit.lines, { yPercent: 0, duration: 0.8, ease: 'power3.out', stagger: 0.08 }, 0.5)
   }
 
-  // Separator before About me
-  animSep(outerSeps[0])
+  animSep(aboutOuterSeps[0])
 
-  // Sections (About me → My approach)
-  sections.forEach(function(sec, si) {
+  aboutSections.forEach(function(sec, si) {
 
-    // Label + number : apparaissent ensemble
     const allLNLines = (sec.labelSplit  ? sec.labelSplit.lines  : [])
       .concat(sec.numberSplit ? sec.numberSplit.lines : [])
     if (allLNLines.length) {
@@ -142,7 +117,7 @@ function openAbout() {
         if (sec.slider) aboutOpenTl.to(sec.slider, { opacity: 1, duration: 0.9, ease: 'power2.out' }, t)
         t += 0.15
       } else {
-        const ref = sec.label || sec.number
+        const ref    = sec.label || sec.number
         const slider = sec.slider
         aboutTriggers.push(ScrollTrigger.create({
           trigger: ref, start: 'top 90%', once: true,
@@ -154,7 +129,6 @@ function openAbout() {
       }
     }
 
-    // Text paragraphs (About me uniquement) — toutes les lignes groupées
     const allParaLines = sec.parasSplits.flatMap(function(s) { return s.lines })
     if (allParaLines.length) {
       if (inVP(sec.paras[0])) {
@@ -168,41 +142,64 @@ function openAbout() {
       }
     }
 
-    // Separator entre les deux sections (pas après My approach)
-    if (si === 0) animSep(outerSeps[1])
+    if (si === 0) animSep(aboutOuterSeps[1])
   })
 
-  // Accordion — un seul ScrollTrigger pour tout le bloc
-  const accordionSection = popupAbout.querySelector('.about__accordion')
-  if (accordionSection) {
-    if (inVP(accordionSection)) {
-      accordionData.forEach(function(item, i) {
+  if (aboutAccordionSection) {
+    if (inVP(aboutAccordionSection)) {
+      aboutAccordionData.forEach(function(item, i) {
         const textLines = (item.letterSplit ? item.letterSplit.lines : [])
           .concat(item.titleSplit ? item.titleSplit.lines : [])
         const d = i * 0.15
         if (textLines.length) aboutOpenTl.to(textLines, { yPercent: 0, duration: 0.6, ease: 'power3.out', stagger: 0.08, delay: d }, t)
         if (item.icon)        aboutOpenTl.to(item.icon,  { opacity: 1, duration: 0.4, ease: 'power2.out', delay: d }, t)
-        if (item.sep)         aboutOpenTl.to(item.sep,   { scaleX: 1, duration: 0.5, ease: 'power2.out', delay: d + 0.2 }, t)
+        if (item.sep)         aboutOpenTl.to(item.sep,   { scaleX: 1, duration: 0.9, ease: 'power2.out', delay: d + 0.2 }, t)
       })
     } else {
       aboutTriggers.push(ScrollTrigger.create({
-        trigger: accordionSection, start: 'top 92%', once: true,
+        trigger: aboutAccordionSection, start: 'top 92%', once: true,
         onEnter: function() {
-          accordionData.forEach(function(item, i) {
+          aboutAccordionData.forEach(function(item, i) {
             const textLines = (item.letterSplit ? item.letterSplit.lines : [])
               .concat(item.titleSplit ? item.titleSplit.lines : [])
             const d = i * 0.15
             if (textLines.length) gsap.to(textLines, { yPercent: 0, duration: 0.6, ease: 'power3.out', stagger: 0.08, delay: d })
             if (item.icon)        gsap.to(item.icon,  { opacity: 1, duration: 0.4, ease: 'power2.out', delay: d })
-            if (item.sep)         gsap.to(item.sep,   { scaleX: 1, duration: 0.5, ease: 'power2.out', delay: d + 0.2 })
+            if (item.sep)         gsap.to(item.sep,   { scaleX: 1, duration: 0.9, ease: 'power2.out', delay: d + 0.2 })
           })
         }
       }))
     }
   }
 
-  // Separator after accordion
-  animSep(outerSeps[2])
+  animSep(aboutOuterSeps[2])
+
+  if (aboutLinksSection) {
+    if (inVP(aboutLinksSection)) {
+      if (linksLabelSplit) aboutOpenTl.to(linksLabelSplit.lines, { yPercent: 0, duration: 0.8, ease: 'power3.out' }, t)
+      linkSplits.forEach(function(split, i) {
+        const lines = split ? split.lines : []
+        const icon  = aboutLinkIconInners[i]
+        const pos   = t + i * 0.12
+        if (lines.length) aboutOpenTl.to(lines, { yPercent: 0, duration: 0.7, ease: 'power3.out' }, pos)
+        if (icon) aboutOpenTl.to(icon, { yPercent: 0, duration: 0.6, ease: 'power2.out' }, pos)
+      })
+    } else {
+      aboutTriggers.push(ScrollTrigger.create({
+        trigger: aboutLinksSection, start: 'top 90%', once: true,
+        onEnter: function() {
+          if (linksLabelSplit) gsap.to(linksLabelSplit.lines, { yPercent: 0, duration: 0.8, ease: 'power3.out' })
+          linkSplits.forEach(function(split, i) {
+            const lines = split ? split.lines : []
+            const icon  = aboutLinkIconInners[i]
+            const delay = i * 0.12
+            if (lines.length) gsap.to(lines, { yPercent: 0, duration: 0.7, ease: 'power3.out', delay: delay })
+            if (icon) gsap.to(icon, { yPercent: 0, duration: 0.6, ease: 'power2.out', delay: delay })
+          })
+        }
+      }))
+    }
+  }
 }
 
 // Overflow hidden sur dt et dd (une seule fois à l'init)
@@ -214,19 +211,21 @@ popupProject.querySelectorAll('dt, dd').forEach(el => {
 })
 
 
-let splitInstances = []
-let openTl = null
+let splitInstances    = []
+let openTl            = null
+let cursorResetCall   = null
 
 // ─── Open / Close ─────────────────────────────────────────────────────────────
 
 function openPopup(clientX, clientY) {
+  if (cursorResetCall) { cursorResetCall.kill(); cursorResetCall = null }
   if (openTl) { openTl.kill(); openTl = null }
   gsap.killTweensOf(popupProject)
 
   splitInstances.forEach(s => s.revert())
   splitInstances = []
 
-  gsap.set(popupProject,     { display: 'block', clipPath: 'inset(100% 0 0 0)' })
+  gsap.set(popupProject,     { display: 'block', clipPath: 'inset(100% 0% 0% 0%)' })
   gsap.set(separators, { scaleX: 0 })
   gsap.set(dts,        { y: '105%' })
   gsap.set(dds,        { y: '105%' })
@@ -255,7 +254,7 @@ function openPopup(clientX, clientY) {
   })
 
   openTl = gsap.timeline()
-  openTl.to(popupProject, { clipPath: 'inset(0% 0 0 0)', duration: 1, ease: 'power3.inOut' })
+  openTl.to(popupProject, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1, ease: 'power3.inOut' })
   openTl.fromTo(allLines,
     { yPercent: 100 },
     { yPercent: 0, duration: 0.6, ease: 'expo.out', stagger: 0.08 },
@@ -272,16 +271,20 @@ function openPopup(clientX, clientY) {
 }
 
 function closePopup() {
+  if (cursorResetCall) { cursorResetCall.kill(); cursorResetCall = null }
   if (openTl) { openTl.kill(); openTl = null }
   gsap.killTweensOf(popupProject)
 
-  gsap.delayedCall(0.5, () => window.setCursorState(false))
+  cursorResetCall = gsap.delayedCall(0.5, function() {
+    cursorResetCall = null
+    window.setCursorState(false)
+  })
 
   gsap.killTweensOf(overlay)
   gsap.to(overlay, { opacity: 0, duration: 0.7, delay: 0.4, ease: 'power2.out', onComplete: () => overlay.classList.remove('is-open') })
 
   gsap.to(popupProject, {
-    clipPath: 'inset(0 0 100% 0)',
+    clipPath: 'inset(0% 0% 100% 0%)',
     duration: 1,
     ease: 'power3.inOut',
     onComplete() {
@@ -295,7 +298,11 @@ function closePopup() {
 // ─── About ────────────────────────────────────────────────────────────────────
 
 function closeAbout() {
+  gsap.killTweensOf(cursorArrows)
+  gsap.to(cursorArrows, { opacity: 0, duration: 0.2, ease: 'power2.out' })
+
   state.isAboutOpen = false
+  navAbout.classList.remove('is-open')
   window.setCursorState(false)
   accordionItems.forEach(function(item) { item.removeAttribute('open') })
   if (aboutOpenTl) { aboutOpenTl.kill(); aboutOpenTl = null }
@@ -304,9 +311,9 @@ function closeAbout() {
   aboutTriggers.forEach(function(t) { t.kill() })
   aboutTriggers = []
   gsap.killTweensOf(overlay)
-  gsap.to(overlay, { opacity: 0, duration: 0.7, delay: 0.4, ease: 'power2.out', onComplete: () => overlay.classList.remove('is-open') })
+  gsap.to(overlay, { opacity: 0, duration: 1.4, delay: 0.4, ease: 'power2.out', onComplete: () => overlay.classList.remove('is-open') })
   gsap.to(popupAbout, {
-    clipPath: 'inset(100% 0 0 0)',
+    clipPath: 'inset(0% 0% 100% 0%)',
     duration: 1,
     ease: 'power3.inOut',
     onComplete: function() {
@@ -318,8 +325,10 @@ function closeAbout() {
 
 navAbout.addEventListener('click', event => {
   event.stopPropagation()
+  if (state.isLoading) return
   if (state.isAboutOpen) { closeAbout(); return }
   state.isAboutOpen = true
+  navAbout.classList.add('is-open')
   window.setCursorState(true)
   gsap.killTweensOf(overlay)
   overlay.classList.add('is-open')
@@ -331,11 +340,128 @@ navAbout.addEventListener('click', event => {
 
 const accordionItems = Array.from(popupAbout.querySelectorAll('.accordion__item'))
 
+// ─── Link reveal structure (once at init) ─────────────────────────────────────
+
+Array.from(popupAbout.querySelectorAll('.about__link')).forEach(function(link) {
+  const svg  = link.querySelector('svg')
+  const text = Array.from(link.childNodes)
+    .filter(function(n) { return n.nodeType === Node.TEXT_NODE && n.textContent.trim() })
+    .map(function(n) { return n.textContent.trim() })
+    .join('')
+
+  const labelOuter = document.createElement('span')
+  labelOuter.className = 'about__link-label'
+  labelOuter.style.cssText = 'display:block;'
+  labelOuter.textContent = text
+
+  const iconOuter = document.createElement('span')
+  iconOuter.className = 'about__link-icon'
+  iconOuter.style.cssText = 'overflow:hidden;display:flex;align-items:center;'
+  const iconInner = document.createElement('span')
+
+  while (link.firstChild) link.removeChild(link.firstChild)
+  link.appendChild(labelOuter)
+  link.appendChild(iconOuter)
+  iconOuter.appendChild(iconInner)
+  iconInner.appendChild(svg)
+})
+
+// ─── About DOM cache (références statiques, calculées une fois) ───────────────
+
+const aboutPortrait      = popupAbout.querySelector('.about__portrait')
+const aboutCaption       = popupAbout.querySelector('.about__portrait-caption')
+const aboutOuterSeps     = Array.from(
+  popupAbout.querySelector('.popup-about__inner').children
+).filter(function(el) { return el.classList.contains('separator') })
+const aboutAllSeps       = Array.from(popupAbout.querySelectorAll('.separator'))
+const aboutSections      = Array.from(popupAbout.querySelectorAll('.about__section')).map(function(sec) {
+  return {
+    label:  sec.querySelector('.about__label'),
+    number: sec.querySelector('.about__number'),
+    slider: sec.querySelector('.approach__slider'),
+    paras:  Array.from(sec.querySelectorAll('.about__text p'))
+  }
+})
+const aboutLinksLabel    = popupAbout.querySelector('.about__links-label')
+const aboutLinkLabelEls  = Array.from(popupAbout.querySelectorAll('.about__link-label'))
+const aboutLinkIconInners = Array.from(popupAbout.querySelectorAll('.about__link-icon > span'))
+const aboutAccordionData = accordionItems.map(function(item) {
+  const sib = item.nextElementSibling
+  return {
+    letter: item.querySelector('.accordion__letter'),
+    title:  item.querySelector('.accordion__title'),
+    icon:   item.querySelector('.accordion__icon'),
+    sep:    sib && sib.classList.contains('separator') ? sib : null
+  }
+})
+const aboutAccordionIcons   = aboutAccordionData.map(function(item) { return item.icon }).filter(Boolean)
+const aboutAccordionSection = popupAbout.querySelector('.about__accordion')
+const aboutLinksSection     = popupAbout.querySelector('.about__links')
+
+// ─── CTA Dropdown ─────────────────────────────────────────────────────────────
+
+const ctaWrapper  = document.querySelector('.nav__chat-wrapper')
+const ctaDropdown = document.querySelector('.nav__dropdown')
+const ctaLinks    = Array.from(ctaDropdown.querySelectorAll('.nav__dropdown-link'))
+const ctaSep      = ctaDropdown.querySelector('.nav__dropdown-separator')
+
+gsap.set(ctaDropdown, { display: 'none' })
+if (ctaSep) gsap.set(ctaSep, { scaleX: 0, transformOrigin: 'left center' })
+
+let dropdownTl     = null
+let dropdownSplits = []
+let dropdownOpen   = false
+
+function openDropdown() {
+  if (dropdownOpen) return
+  dropdownOpen = true
+  if (dropdownTl) { dropdownTl.kill(); dropdownTl = null }
+  dropdownSplits.forEach(function(s) { s.revert() })
+  dropdownSplits = []
+
+  gsap.set(ctaDropdown, { display: 'flex', clipPath: 'inset(0% 0% 100% 0%)' })
+  if (ctaSep) gsap.set(ctaSep, { scaleX: 0 })
+
+  const linkSplits = ctaLinks.map(function(link) {
+    const s = SplitText.create(link, { type: 'lines', mask: 'lines' })
+    dropdownSplits.push(s)
+    gsap.set(s.lines, { yPercent: 100 })
+    return s
+  })
+
+  dropdownTl = gsap.timeline()
+    .to(ctaDropdown, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.70, ease: 'power2.out' })
+
+  if (linkSplits[0]) dropdownTl.to(linkSplits[0].lines, { yPercent: 0, duration: 0.35, ease: 'power3.out' }, '-=0.55')
+  if (ctaSep)        dropdownTl.to(ctaSep, { scaleX: 1, duration: 0.25, ease: 'power2.out' }, '<0.06')
+  if (linkSplits[1]) dropdownTl.to(linkSplits[1].lines, { yPercent: 0, duration: 0.35, ease: 'power3.out' }, '<0.06')
+}
+
+function closeDropdown() {
+  if (!dropdownOpen) return
+  dropdownOpen = false
+  if (dropdownTl) { dropdownTl.kill(); dropdownTl = null }
+
+  dropdownTl = gsap.to(ctaDropdown, {
+    clipPath: 'inset(0% 0% 100% 0%)',
+    duration: 0.35,
+    ease: 'power2.in',
+    onComplete: function() {
+      dropdownTl = null
+      gsap.set(ctaDropdown, { display: 'none' })
+      dropdownSplits.forEach(function(s) { s.revert() })
+      dropdownSplits = []
+    }
+  })
+}
+
+ctaWrapper.addEventListener('mouseenter', openDropdown)
+ctaWrapper.addEventListener('mouseleave', closeDropdown)
 
 // ─── Clicks globaux ───────────────────────────────────────────────────────────
 
 document.addEventListener('click', event => {
-
+  if (state.isLoading) return
   if (state.isAboutOpen) {
     if (event.target.closest('.about__close')) { closeAbout(); return }
     if (event.target.closest('a, summary, button, .accordion__content, .separator')) return

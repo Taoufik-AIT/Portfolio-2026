@@ -20,17 +20,43 @@ window.setCursorState(false)
 
 gsap.set(cursor, { xPercent: -50, yPercent: -50 })
 
-let cursorVisible = false
+let cursorMoved = false
+let cursorReady = false
+let mouseX = 0
+let mouseY = 0
+
+function revealCursor() {
+  if (!cursorMoved) return
+  cursor.style.display = 'block'
+  gsap.set(cursor, { x: mouseX, y: mouseY })
+  gsap.fromTo(cursor,
+    { clipPath: 'inset(50% 50% 50% 50%)' },
+    { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.5, ease: 'power3.out', clearProps: 'clipPath' }
+  )
+}
+
+window.showCursor = function() {
+  cursorReady = true
+  revealCursor()
+}
 
 window.addEventListener('mousemove', function(event) {
-  if (!cursorVisible) { cursor.style.display = 'block'; cursorVisible = true }
+  mouseX = event.clientX
+  mouseY = event.clientY
   gsap.to(cursor, {
-    x: event.clientX,
-    y: event.clientY,
+    x: mouseX,
+    y: mouseY,
     duration: 0.48,
     ease: 'power3.out',
     overwrite: 'auto'
   })
+
+  if (!cursorMoved) {
+    cursorMoved = true
+    if (cursorReady) revealCursor()
+  }
+
+  if (!cursorReady) return
 
   if (state.isPopupOpen) {
     const pw = popupProject.offsetWidth

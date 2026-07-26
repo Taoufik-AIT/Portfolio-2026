@@ -4,7 +4,18 @@
 }
 
 .loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  z-index: 50;
+  pointer-events: none;
 }
 
 .nav {
@@ -36,14 +47,16 @@
 }
 
 .nav__cta {
+  display: flex;
+  align-items: center;
   font-weight: var(--weight-bold);
   text-transform: uppercase;
   letter-spacing: -1px;
   font-size: var(--text-base);
+  line-height: 1;
   background-color: var(--color-dark);
   color: white;
-  padding: 2px 8px;
-
+  padding: 2px 9px 2px 8px;
 }
 
 .nav__chat-wrapper {
@@ -51,7 +64,8 @@
 }
 
 .nav__dropdown {
-  display: none;
+  display: flex;
+  flex-direction: column;
   position: absolute;
   top: 100%;
   left: 0;
@@ -68,21 +82,21 @@
 }
 
 .preview {
+  position: relative;
   width: 100%;
   height: 456px;
   overflow: hidden;
 }
 
 .preview__img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.nav__dropdown.is-open {
-  display: flex;
-  flex-direction: column;
-}
 
 .project-info {
   position: absolute;
@@ -208,14 +222,13 @@
   flex-shrink: 0;
 }
 
-.carousel__group::after {
-  content: '';
-  display: block;
-  width: 0.5px;
+.carousel__separator {
+  width: 1px;
   height: 42px;
   background-color: var(--color-dark);
   opacity: 0.2;
   flex-shrink: 0;
+  transform-origin: bottom center;
 }
 
 .carousel__img {
@@ -242,6 +255,7 @@
 }
 
 .popup-project {
+  display: none;
   position: fixed;
   width: 335px;
   background-color: var(--color-popup);
@@ -364,7 +378,7 @@
 
 .separator {
   width: 100%;
-  height: 0.5px;
+  height: 1px;
   background-color: var(--color-gray);
   opacity: 0.2;
 }
@@ -424,6 +438,7 @@
   padding: 5px 0;
   gap: var(--about-gap);
   list-style: none;
+  transition: color 0.25s ease;
 }
 
 .accordion__header:hover {
@@ -543,6 +558,11 @@
   font-size: var(--text-sm);
   font-weight: var(--weight-bold);
   color: var(--color-dark);
+  transition: color 0.25s ease;
+}
+
+.about__link:hover {
+  color: var(--color-gray);
 }
 
 .about__link-arrow {
@@ -614,6 +634,23 @@
 .cursor.is-open .cursor__bar--h,
 .cursor.is-open .cursor__bar--v {
   transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.cursor__arrow {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+  color: var(--color-dark);
+}
+
+.cursor__arrow--up {
+  bottom: calc(100% + 7px);
+}
+
+.cursor__arrow--down {
+  top: calc(100% + 7px);
 }
 
 .grid-overlay {

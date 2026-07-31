@@ -7,9 +7,10 @@ gsap.set('.carousel__triangle', { opacity: 0 })
 gsap.set('.carousel__label',    { opacity: 0 })
 gsap.set('.carousel__img',      { clipPath: 'inset(100% 0 0 0)' })
 gsap.set('.preview-wrapper',    { autoAlpha: 0 })
-gsap.set('.preview',            { clipPath: 'inset(90% 10% 12% 12%)', scale: 0.45 })
+gsap.set('.preview',            { clipPath: 'inset(100% 10% 0% 12%)', scale: 0.45 })
 gsap.set('.nav',                { opacity: 0 })
 gsap.set('.project-info',       { opacity: 0 })
+gsap.set('.project-open-btn',   { opacity: 0 })
 document.body.classList.add('is-loading')
 
 // ─── SplitText ────────────────────────────────────────────────────────────────
@@ -22,6 +23,7 @@ titleSplit.lines.forEach(function(line) { line.parentElement.style.paddingRight 
 
 gsap.set(titleSplit.lines,  { yPercent: 100 })
 gsap.set(expertSplit.lines, { yPercent: 100 })
+
 // Lignes cachées dans les wrappers — on rend les wrappers visibles maintenant
 gsap.set('.loader__title-wrapper, .loader__expertise-wrapper', { visibility: 'visible' })
 
@@ -36,10 +38,10 @@ const loaderTl = gsap.timeline({
 })
 
 // Étape 1 — Titre
-loaderTl.to(titleSplit.lines, { yPercent: 0, duration: 0.8, ease: 'power3.inOut', stagger: 0.12 })
+loaderTl.to(titleSplit.lines, { yPercent: 0, duration: 1, ease: 'power2.inOut', stagger: 0.12 })
 
 // Étape 2 — Expertise (chevauchement avec titre)
-loaderTl.to(expertSplit.lines, { yPercent: 0, duration: 0.8, ease: 'power3.inOut', stagger: 0.15 }, '-=0.6')
+loaderTl.to(expertSplit.lines, { yPercent: 0, duration: 1, ease: 'power3.inOut', stagger: 0.12 }, '-=0.8')
 
 // Étape 3 — Triangle seul (le label apparaît à la toute fin, avec nav et project-info)
 loaderTl.to('.carousel__triangle', { opacity: 1, duration: 0.2, ease: 'power1.out' }, '+=0.2')
@@ -74,7 +76,7 @@ window.onTicksReady = function() {
   loaderTl.to(allImgs, {
     clipPath: 'inset(0% 0 0 0)',
     duration: IMG_DUR,
-    ease: 'power1.out',
+    ease: 'power3.out',
     stagger: { each: eachImg, from: centerImgIdx }
   }, 'ticksAndImages')
 
@@ -134,7 +136,8 @@ window.onTicksReady = function() {
 
   // Étape 6 — Sortie quand le front de la vague atteint les bords
   const waveEdge      = (nTickMax > 1 ? nTickMax - 1 : 1) * EACH_TICK
-  const exitOffsetNum = waveEdge * 0.3
+  const isMobileLoader = window.matchMedia('(max-width: 430px)').matches
+  const exitOffsetNum  = waveEdge * (isMobileLoader ? 0.1 : 0.3)
   const exitStart     = 'ticksAndImages+=' + exitOffsetNum.toFixed(3)
 
   loaderTl.to(titleSplit.lines, {
@@ -155,18 +158,16 @@ window.onTicksReady = function() {
   const previewStart = 'ticksAndImages+=' + (exitOffsetNum + 0.7).toFixed(3)
 
   loaderTl.set('.preview-wrapper', { autoAlpha: 1 }, previewStart)
-  // Étape 7 — reveal vertical uniquement, pleine largeur
   loaderTl.to('.preview', {
-    clipPath: 'inset(0% 12% 12% 12%)',
-    duration: 1.7,
-    ease: 'power3.out'
+    clipPath: 'inset(20% 10% 10% 12%)',
+    duration: 1.3,
+    ease: 'power3.inOut'
   }, previewStart)
 
   // Débloque le scroll dès que le clip-path est fini — le scale continue en fond
   loaderTl.call(function() {
     document.body.classList.remove('is-loading')
     gsap.set('.loader', { display: 'none' })
-    state.isLoading = false
   }, null, '>')
 
   // Étape 8 — Scale 0.45 → 1
@@ -178,12 +179,12 @@ window.onTicksReady = function() {
   }, '<-=0.15')
 
   // Étape 9 — Fondu nav + project-info + label
-  loaderTl.to(['.nav', '.project-info', '.carousel__label'], {
+  loaderTl.to(['.nav', '.project-info', '.carousel__label', '.project-open-btn'], {
     opacity: 1,
-    duration: 0.5,
+    duration: 0.6,
     ease: 'power2.out'
   }, '>+=0.1')
 
-  loaderTl.call(function() { window.showCursor() }, null, '>')
+  loaderTl.call(function() { window.showCursor(); state.isLoading = false }, null, '>')
 
 }

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>404 — Taoufik Aït</title>
+        <link rel="stylesheet" href="css/reset.css">
+        <link rel="stylesheet" href="css/base.css">
+        <link rel="stylesheet" href="css/layout.css">
+        <style>
+
+            /* ── Error info — fixe, hors physique ───────────────────────── */
+
+            .error-info {
+                position: fixed;
+                left: var(--grid-margin);
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 50;
+            }
+
+            .error__code {
+                font-size: var(--text-xl);
+                font-weight: var(--weight-bold);
+                letter-spacing: -2px;
+                line-height: 1;
+            }
+
+            .error__message {
+                font-size: var(--text-sm);
+                font-weight: var(--weight-bold);
+                color: var(--color-gray);
+                line-height: var(--leading-normal);
+            }
+
+            .error__cta {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                font-size: var(--text-base);
+                font-weight: var(--weight-bold);
+                color: var(--color-dark);
+                margin-top: 4px;
+            }
+
+            .error__cta::before {
+                content: '';
+                display: inline-block;
+                width: 6px;
+                height: 6px;
+                background-color: var(--color-red);
+                flex-shrink: 0;
+            }
+
+            /* ── Bloc VHS — fond bleu ───────────────────────────────────── */
+
+            .vhs-block {
+                position: relative;
+                background-color: #000;
+                overflow: hidden;
+            }
+
+            .preview__img.vhs-block {
+                position: absolute;
+            }
+
+            /* ── Lignes de scan — dessus de tout via multiply ────────────── */
+
+            .vhs-scanlines {
+                position: absolute;
+                inset: 0;
+                background: repeating-linear-gradient(
+                    0deg,
+                    transparent 0px,
+                    transparent 1px,
+                    rgba(0, 0, 0, 0.52) 1px,
+                    rgba(0, 0, 0, 0.52) 5px
+                );
+                animation: scanline-drift 2.5s linear infinite;
+                pointer-events: none;
+                z-index: 10;
+                mix-blend-mode: multiply;
+            }
+
+            @keyframes scanline-drift {
+                from { background-position: 0 0; }
+                to   { background-position: 0 6px; }
+            }
+
+            /* ── Wrapper interne — reçoit le jerkwhole ──────────────────── */
+
+            .vhs-inner {
+                position: absolute;
+                inset: 0;
+                animation: jerkwhole 11s linear infinite;
+            }
+
+            /* ── Couches de texte ────────────────────────────────────────── */
+
+            .vhs-layer {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 1px;
+                white-space: nowrap;
+                user-select: none;
+                pointer-events: none;
+                font-weight: var(--weight-bold);
+            }
+
+            .vhs-sub {
+                font-size: 4px;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                line-height: 1;
+            }
+
+            .vhs-num {
+                font-size: 11px;
+                letter-spacing: -0.3px;
+                line-height: 1;
+            }
+
+            .vhs-layer--large {
+                gap: 4px;
+            }
+
+            .vhs-layer--large .vhs-sub {
+                font-size: 28px;
+                letter-spacing: 6px;
+            }
+
+            .vhs-layer--large .vhs-num {
+                font-size: 96px;
+                letter-spacing: -4px;
+            }
+
+            .vhs-layer--red {
+                color: #ff2200;
+                filter: blur(0.5px);
+                z-index: 1;
+                animation: jerk-red 7s linear infinite;
+            }
+
+            .vhs-layer--green {
+                color: #00ff44;
+                filter: blur(0.4px);
+                z-index: 2;
+                animation: jerk-green 9s linear infinite;
+            }
+
+            .vhs-layer--blue {
+                color: #3355ff;
+                filter: blur(0.5px);
+                z-index: 3;
+                animation: jerk-blue 5s linear infinite;
+            }
+
+            .vhs-layer--white {
+                color: rgba(255, 255, 255, 0.95);
+                z-index: 4;
+                animation: jerk-white 13s linear infinite;
+            }
+
+            /* ── Keyframes — glitch accentué ─────────────────────────────── */
+
+            @keyframes jerk-red {
+                0%     { transform: translate(calc(-50% + 2px), -50%);               filter: blur(0.5px); }
+                6.9%   { transform: translate(calc(-50% + 2px), -50%);               filter: blur(0.5px); }
+                7%     { transform: translate(calc(-50% + 38px), calc(-50% - 3px));   filter: blur(2.5px); }
+                7.15%  { transform: translate(calc(-50% - 20px), -50%);              filter: blur(1px);   }
+                7.3%   { transform: translate(calc(-50% + 2px), -50%);               filter: blur(0.5px); }
+                26.9%  { transform: translate(calc(-50% + 2px), -50%);               filter: blur(0.5px); }
+                27%    { transform: translate(calc(-50% + 52px), calc(-50% + 4px));   filter: blur(3px);   }
+                27.15% { transform: translate(calc(-50% - 28px), -50%);              filter: blur(0.5px); }
+                27.3%  { transform: translate(calc(-50% + 2px), -50%);               filter: blur(0.5px); }
+                70.9%  { transform: translate(calc(-50% + 2px), -50%);               filter: blur(0.5px); }
+                71%    { transform: translate(calc(-50% + 44px), calc(-50% - 5px));   filter: blur(2px);   }
+                71.1%  { transform: translate(calc(-50% + 2px), -50%);               filter: blur(0.5px); }
+                91.9%  { transform: translate(calc(-50% + 2px), -50%);               filter: blur(0.5px); }
+                92%    { transform: translate(calc(-50% - 32px), calc(-50% + 3px));   filter: blur(3px);   }
+                92.2%  { transform: translate(calc(-50% + 2px), -50%);               filter: blur(0.5px); }
+                100%   { transform: translate(calc(-50% + 2px), -50%);               filter: blur(0.5px); }
+            }
+
+            @keyframes jerk-blue {
+                0%     { transform: translate(calc(-50% - 2px), -50%);               filter: blur(0.5px); }
+                21.9%  { transform: translate(calc(-50% - 2px), -50%);               filter: blur(0.5px); }
+                22%    { transform: translate(calc(-50% - 46px), calc(-50% + 4px));   filter: blur(2.5px); }
+                22.15% { transform: translate(calc(-50% + 22px), -50%);              filter: blur(1px);   }
+                22.3%  { transform: translate(calc(-50% - 2px), -50%);               filter: blur(0.5px); }
+                40.9%  { transform: translate(calc(-50% - 2px), -50%);               filter: blur(0.5px); }
+                41%    { transform: translate(calc(-50% + 38px), calc(-50% - 3px));   filter: blur(3px);   }
+                41.2%  { transform: translate(calc(-50% - 2px), -50%);               filter: blur(0.5px); }
+                54.9%  { transform: translate(calc(-50% - 2px), -50%);               filter: blur(0.5px); }
+                55%    { transform: translate(calc(-50% + 30px), calc(-50% - 4px));   filter: blur(2px);   }
+                55.15% { transform: translate(calc(-50% - 34px), -50%);              filter: blur(0.5px); }
+                55.3%  { transform: translate(calc(-50% - 2px), -50%);               filter: blur(0.5px); }
+                87.9%  { transform: translate(calc(-50% - 2px), -50%);               filter: blur(0.5px); }
+                88%    { transform: translate(calc(-50% - 54px), calc(-50% - 5px));   filter: blur(3px);   }
+                88.2%  { transform: translate(calc(-50% - 2px), -50%);               filter: blur(0.5px); }
+                100%   { transform: translate(calc(-50% - 2px), -50%);               filter: blur(0.5px); }
+            }
+
+            @keyframes jerk-green {
+                0%     { transform: translate(-50%, calc(-50% + 1px));                filter: blur(0.4px); }
+                14.9%  { transform: translate(-50%, calc(-50% + 1px));                filter: blur(0.4px); }
+                15%    { transform: translate(calc(-50% + 22px), calc(-50% - 8px));   filter: blur(1.5px); }
+                15.15% { transform: translate(calc(-50% - 10px), calc(-50% + 6px));   filter: blur(0.4px); }
+                15.3%  { transform: translate(-50%, calc(-50% + 1px));                filter: blur(0.4px); }
+                45.9%  { transform: translate(-50%, calc(-50% + 1px));                filter: blur(0.4px); }
+                46%    { transform: translate(calc(-50% - 20px), calc(-50% + 12px));  filter: blur(1.5px); }
+                46.2%  { transform: translate(-50%, calc(-50% + 1px));                filter: blur(0.4px); }
+                59.9%  { transform: translate(-50%, calc(-50% + 1px));                filter: blur(0.4px); }
+                60%    { transform: translate(calc(-50% - 25px), calc(-50% + 9px));   filter: blur(2px);   }
+                60.15% { transform: translate(calc(-50% + 18px), -50%);              filter: blur(0.4px); }
+                60.3%  { transform: translate(-50%, calc(-50% + 1px));                filter: blur(0.4px); }
+                100%   { transform: translate(-50%, calc(-50% + 1px));                filter: blur(0.4px); }
+            }
+
+            @keyframes jerk-white {
+                0%     { transform: translate(-50%, -50%);                             filter: blur(0px);   }
+                44.9%  { transform: translate(-50%, -50%);                             filter: blur(0px);   }
+                45%    { transform: translate(calc(-50% + 8px), calc(-50% - 2px));     filter: blur(0.8px); }
+                45.1%  { transform: translate(calc(-50% - 5px), -50%);               filter: blur(0px);   }
+                45.2%  { transform: translate(-50%, -50%);                             filter: blur(0px);   }
+                71.9%  { transform: translate(-50%, -50%);                             filter: blur(0px);   }
+                72%    { transform: translate(calc(-50% - 7px), calc(-50% + 3px));     filter: blur(0.5px); }
+                72.15% { transform: translate(-50%, -50%);                             filter: blur(0px);   }
+                91.9%  { transform: translate(-50%, -50%);                             filter: blur(0px);   }
+                92%    { transform: translate(calc(-50% - 5px), -50%);               filter: blur(0px);   }
+                92.1%  { transform: translate(-50%, -50%);                             filter: blur(0px);   }
+                100%   { transform: translate(-50%, -50%);                             filter: blur(0px);   }
+            }
+
+            @keyframes jerkwhole {
+                0%, 100% { transform: scale(1)     skewX(0deg);    }
+                24.9%    { transform: scale(1)     skewX(0deg);    }
+                25%      { transform: scale(1.02)  skewX(0.8deg);  }
+                25.1%    { transform: scale(0.988) skewX(-0.5deg); }
+                25.2%    { transform: scale(1)     skewX(0deg);    }
+                77.9%    { transform: scale(1)     skewX(0deg);    }
+                78%      { transform: scale(0.995) skewX(-1deg);   }
+                78.15%   { transform: scale(1)     skewX(0deg);    }
+            }
+
+            /* ── Bande de roll ──────────────────────────────────────────── */
+
+            .vhs-roll {
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                z-index: 2;
+                background: repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px,
+                    transparent 170px,
+                    rgba(180, 215, 255, 0.04) 174px,
+                    rgba(180, 215, 255, 0.16) 178px,
+                    rgba(180, 215, 255, 0.04) 182px,
+                    transparent 186px,
+                    transparent 300px
+                );
+                animation: vhs-roll-up 6s linear infinite;
+            }
+
+            @keyframes vhs-roll-up {
+                from { background-position: 0 0; }
+                to   { background-position: 0 -300px; }
+            }
+
+            .vhs-flash {
+                position: absolute;
+                inset: 0;
+                background-color: white;
+                opacity: 0;
+                pointer-events: none;
+                z-index: 5;
+            }
+
+            .vhs-beam {
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                z-index: 4;
+                background: linear-gradient(
+                    108deg,
+                    transparent 30%,
+                    rgba(255, 255, 255, 0.08) 42%,
+                    rgba(255, 255, 255, 0.65) 50%,
+                    rgba(255, 255, 255, 0.08) 58%,
+                    transparent 70%
+                );
+                opacity: 0;
+            }
+
+            .vhs-glitch {
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                z-index: 6;
+                opacity: 0;
+            }
+
+            .vhs-static {
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                z-index: 8;
+                background: white;
+                opacity: 0.2;
+                mix-blend-mode: screen;
+                filter: url(#vhs-noise);
+            }
+
+            /* ── Éléments physiques — purement décoratifs, pas d'interaction ── */
+
+            .carousel, .preview-wrapper {
+                pointer-events: none;
+            }
+
+            /* ── Cursor VHS ─────────────────────────────────────────────── */
+
+            .cursor--vhs {
+                background-color: #000;
+                overflow: hidden;
+            }
+
+            .cursor--vhs .vhs-layer {
+                font-size: 7px;
+                letter-spacing: 0.8px;
+                flex-direction: row;
+            }
+        </style>
+    </head>
+    <body>
+
+
+        <main class="main">
+
+            <!-- error-info : position fixed, hors preview-wrapper → hors physique -->
+            <section class="error-info">
+                <a href="index.html" class="error__cta">Back to home</a>
+            </section>
+
+            <div class="preview-wrapper">
+                <section class="preview">
+                    <div class="preview__img vhs-block">
+                        <div class="vhs-scanlines"></div>
+                        <div class="vhs-inner">
+                            <span class="vhs-layer vhs-layer--large vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span>
+                            <span class="vhs-layer vhs-layer--large vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span>
+                            <span class="vhs-layer vhs-layer--large vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span>
+                            <span class="vhs-layer vhs-layer--large vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <section class="carousel">
+                <div class="carousel__ruler">
+                    <p class="carousel__label">Scroll / Drag</p>
+                    <div class="carousel__triangle"></div>
+                </div>
+
+                <div class="carousel__line"></div>
+
+                <div class="carousel__track">
+                    <ul class="carousel__group" data-project="0">
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                    </ul>
+                    <div class="carousel__separator"></div>
+                    <ul class="carousel__group" data-project="1">
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                    </ul>
+                    <div class="carousel__separator"></div>
+                    <ul class="carousel__group" data-project="2">
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                    </ul>
+                    <div class="carousel__separator"></div>
+                    <ul class="carousel__group" data-project="3">
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                        <li><div class="carousel__img vhs-block"><div class="vhs-scanlines"></div><div class="vhs-inner"><span class="vhs-layer vhs-layer--red"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--green"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--blue"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span><span class="vhs-layer vhs-layer--white"><span class="vhs-sub">error</span><span class="vhs-num">404</span></span></div></div></li>
+                    </ul>
+                </div>
+            </section>
+
+        </main>
+
+        <svg class="grain" xmlns="http://www.w3.org/2000/svg">
+            <filter id="grain-filter">
+                <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+                <feColorMatrix type="saturate" values="0"/>
+            </filter>
+            <rect width="100%" height="100%" filter="url(#grain-filter)"/>
+        </svg>
+
+
+        <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+            <defs>
+                <filter id="vhs-noise" color-interpolation-filters="linearRGB">
+                    <feTurbulence id="vhs-turbulence" type="fractalNoise" baseFrequency="0.72 0.72" numOctaves="1" seed="3" stitchTiles="stitch"/>
+                    <feColorMatrix type="saturate" values="0"/>
+                </filter>
+            </defs>
+        </svg>
+
+        <div class="cursor cursor--vhs">
+            <div class="vhs-scanlines"></div>
+            <div class="vhs-inner">
+                <span class="vhs-layer vhs-layer--red">404</span>
+                <span class="vhs-layer vhs-layer--green">404</span>
+                <span class="vhs-layer vhs-layer--blue">404</span>
+                <span class="vhs-layer vhs-layer--white">404</span>
+            </div>
+            <div class="vhs-roll"></div>
+            <div class="vhs-flash"></div>
+            <div class="vhs-beam"></div>
+            <div class="vhs-glitch"></div>
+            <div class="vhs-static"></div>
+        </div>
+
+        <script src="js/gsap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js"></script>
+        <script src="js/cursor-core.js"></script>
+        <script src="js/404.js"></script>
+    </body>
+</html>

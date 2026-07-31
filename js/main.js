@@ -52,7 +52,7 @@ const projects = [
     client: 'Studio Fictif',
     sector: 'Creative',
     role: 'Art Director',
-    scope: 'Branding / Motion / Web',
+    scope: 'Motion / Web',
     description1: 'A fictitious creative studio project exploring brand identity and motion design. The goal was to build a cohesive visual language that spans digital and print, with a strong typographic system and animated brand elements.',
     description2: 'The project focused on clear product presentation, intuitive navigation, and a streamlined checkout flow to improve usability and conversion. The interface was designed to highlight the brand while maintaining a clean and scalable design system.',
   },
@@ -97,7 +97,10 @@ gsap.set(previewImgs[1], { zIndex: 0 })
   w.appendChild(el)
 })
 
+const isMobile       = window.matchMedia('(max-width: 430px)').matches
+const lerpFactor     = isMobile ? 0.15 : 0.02
 let scrollDir        = 1
+let waveInitialized  = false
 let projectInfoReady = false
 
 function updateProjectInfo() {
@@ -209,7 +212,7 @@ gsap.ticker.lagSmoothing(0)
 
 gsap.ticker.add(function() {
   const prevX = currentX
-  currentX += (targetX - currentX) * 0.02
+  currentX += (targetX - currentX) * lerpFactor
   const lerpDelta = currentX - prevX
   loopCheck()
 
@@ -256,6 +259,7 @@ function syncCarousel() {
     transitionToken++
     const myToken = transitionToken
     clipTransitionLock = true
+    let lockTimer = setTimeout(function() { lockTimer = null; clipTransitionLock = false }, 1200)
 
     gsap.killTweensOf([nextImg, currImg])
     nextImg.src = allImgs[best].src
@@ -269,6 +273,7 @@ function syncCarousel() {
 
     function reveal() {
       if (myToken !== transitionToken) {
+        if (lockTimer) { clearTimeout(lockTimer); lockTimer = null }
         clipTransitionLock = false
         return
       }
@@ -279,6 +284,7 @@ function syncCarousel() {
         duration: 0.7,
         ease: 'power2.out',
         onComplete: function() {
+          if (lockTimer) { clearTimeout(lockTimer); lockTimer = null }
           clipTransitionLock = false
           syncCarousel()
         }
@@ -343,10 +349,11 @@ window.addEventListener('wheel', function(event) {
 
 // ─── Drag carousel ────────────────────────────────────────────────────────────
 
-let carouselDragging  = false
-let carouselDragStart = 0
-let carouselStartX    = 0
-let carouselMoved     = false
+let carouselDragging   = false
+let carouselDragStart  = 0
+let carouselDragStartY = 0
+let carouselStartX     = 0
+let carouselMoved      = false
 
 carouselEl.addEventListener('mousedown', function(event) {
   if (state.isLoading) return
@@ -366,6 +373,46 @@ window.addEventListener('mousemove', function(event) {
 
 window.addEventListener('mouseup', function() {
   if (!carouselDragging) return
+  carouselDragging = false
+})
+
+let pullStartY = 0
+
+document.addEventListener('touchstart', function(event) {
+  pullStartY = event.touches[0].clientY
+  if (event.target.closest('.popup-about')) return
+  if (event.target.closest('.cursor')) return
+  if (event.target.closest('.popup-project__close')) return
+  if (state.isLoading) return
+  targetX            = currentX
+  carouselDragging   = true
+  carouselMoved      = false
+  carouselDragStart  = event.touches[0].clientX
+  carouselDragStartY = event.touches[0].clientY
+  carouselStartX     = currentX
+}, { passive: true })
+
+document.addEventListener('touchmove', function(event) {
+  if (window.scrollY === 0 && event.touches[0].clientY > pullStartY) event.preventDefault()
+}, { passive: false })
+
+window.addEventListener('touchmove', function(event) {
+  if (!carouselDragging) return
+  event.preventDefault()
+  if (state.isPopupOpen || state.isAboutOpen) return
+  const dx    = event.touches[0].clientX - carouselDragStart
+  const dy    = event.touches[0].clientY - carouselDragStartY
+  const delta = Math.abs(dx) >= Math.abs(dy) ? dx : dy
+  if (Math.abs(delta) > 3) carouselMoved = true
+  targetX = carouselStartX + delta
+}, { passive: false })
+
+window.addEventListener('touchend', function() {
+  if (!carouselDragging) return
+  carouselDragging = false
+})
+
+window.addEventListener('touchcancel', function() {
   carouselDragging = false
 })
 
@@ -456,15 +503,21 @@ function moveTicks() {
     const gap  = Math.abs(ci - lastCi)
 
     if (gap > 50) {
-      if (!allTicks[lastCi]._ret) activateAndReturn(allTicks[lastCi])
+      const t = allTicks[lastCi]
+      if (!t._ret) {
+        if (!waveInitialized) gsap.set(t, { scaleY: 0.375, backgroundColor: '#191919' })
+        activateAndReturn(t)
+      }
     } else {
       for (let j = lastCi; j !== ci; j += step) {
         if (j < 0 || j >= allTicks.length) continue
         const tick = allTicks[j]
         if (tick._ret) continue
+        if (!waveInitialized && j === lastCi) gsap.set(tick, { scaleY: 0.375, backgroundColor: '#191919' })
         activateAndReturn(tick)
       }
     }
+    waveInitialized = true
   }
 
   const ciTick = allTicks[ci]

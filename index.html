@@ -92,7 +92,7 @@
                 </section>
             </div>
 
-            <section class="carousel">
+            <section class="carousel" data-lenis-prevent-touch>
                 <div class="carousel__ruler">
                     <p class="carousel__label">Scroll / Drag</p>
                     <div class="carousel__triangle"></div>
@@ -102,7 +102,7 @@
 
                 <div class="carousel__track">
                     <ul class="carousel__group" data-project="0">
-                        <li><img draggable="false" src="images/project_1.jpg" alt="Get Your Way" class="carousel__img"></li>
+                        <li><img draggable="false" src="images/ppreview-placeholder.jpg" alt="Get Your Way" class="carousel__img"></li>
                         <li><img draggable="false" src="images/project_1.jpg" alt="Get Your Way" class="carousel__img"></li>
                         <li><img draggable="false" src="images/project_1.jpg" alt="Get Your Way" class="carousel__img"></li>
                         <li><img draggable="false" src="images/project_1.jpg" alt="Get Your Way" class="carousel__img"></li>
@@ -172,10 +172,13 @@
             <polyline points="1,1 5,5 9,1" stroke="currentColor" stroke-width="1"/>
           </svg>
         </div>
-        
+
+        <button class="project-open-btn"></button>
+
         <div class="overlay"></div>
-        
+
         <div class="popup-project">
+            <button class="popup-project__close">×</button>
             <h3 class="popup__title">Info</h3>
             <p class="popup__description"></p>
             <p class="popup__description"></p>
@@ -359,6 +362,7 @@
         <script src="js/lenis.min.js"></script>
         <script src="js/loader.js"></script>
         <script src="js/main.js"></script>
+        <script src="js/cursor-core.js"></script>
         <script src="js/cursor.js"></script>
         <script src="js/popup.js"></script>
         <script src="js/carousel.js"></script>

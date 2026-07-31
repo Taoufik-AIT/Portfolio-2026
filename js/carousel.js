@@ -1,6 +1,7 @@
 // Slider auto des images dans la section "My approach" du popup About
 const sliderImages = document.querySelectorAll('.about__approach-img')
 let sliderIndex = 0
+let sliderTimer = null
 
 function updateSlider(activeIndex) {
   sliderImages.forEach(function(img) { img.classList.remove('active') })
@@ -9,8 +10,15 @@ function updateSlider(activeIndex) {
 
 updateSlider(sliderIndex)
 
-setInterval(function() {
-  if (!state.isAboutOpen) return
-  sliderIndex = (sliderIndex + 1) % sliderImages.length
-  updateSlider(sliderIndex)
-}, 1000)
+window.startSlider = function() {
+  if (sliderTimer) return
+  sliderTimer = setInterval(function() {
+    sliderIndex = (sliderIndex + 1) % sliderImages.length
+    updateSlider(sliderIndex)
+  }, 1000)
+}
+
+window.stopSlider = function() {
+  clearInterval(sliderTimer)
+  sliderTimer = null
+}

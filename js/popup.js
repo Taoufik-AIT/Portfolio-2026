@@ -27,6 +27,8 @@ let aboutTriggers = []
 let aboutOpenTl   = null
 
 function openAbout() {
+  if (window.startSlider) window.startSlider()
+  if (isMobile && window.lenis) window.lenis.stop()
   gsap.killTweensOf(cursorArrows)
   gsap.set(cursorArrows, { opacity: 0 })
   gsap.to(cursorArrows, { opacity: 1, duration: 0.35, delay: 0.7, ease: 'power2.out' })
@@ -76,7 +78,7 @@ function openAbout() {
 
   ScrollTrigger.refresh()
 
-  function inVP(el) { return el && el.getBoundingClientRect().top < window.innerHeight }
+  function inVP(el) { if (isMobile) return true; return el && el.getBoundingClientRect().top < window.innerHeight }
 
   let t = 1.0
 
@@ -230,15 +232,19 @@ function openPopup(clientX, clientY) {
   gsap.set(dts,        { y: '105%' })
   gsap.set(dds,        { y: '105%' })
 
-  const pw     = popupProject.offsetWidth
-  const ph     = popupProject.offsetHeight
-  const cw     = 10
-  const margin = 20
-  const gap    = 10
-  const rawX   = clientX > window.innerWidth / 2 ? clientX - cw - pw - gap : clientX + cw + gap
-  const x      = Math.min(Math.max(margin, rawX), window.innerWidth - pw - margin)
-  const y      = Math.min(Math.max(margin, clientY - ph / 2), window.innerHeight - ph - margin)
-  gsap.set(popupProject, { x: x, y: y })
+  if (isMobile) {
+    gsap.set(popupProject, { x: 0, y: 0 })
+  } else {
+    const pw     = popupProject.offsetWidth
+    const ph     = popupProject.offsetHeight
+    const cw     = 10
+    const margin = 20
+    const gap    = 10
+    const rawX   = clientX > window.innerWidth / 2 ? clientX - cw - pw - gap : clientX + cw + gap
+    const x      = Math.min(Math.max(margin, rawX), window.innerWidth - pw - margin)
+    const y      = Math.min(Math.max(margin, clientY - ph / 2), window.innerHeight - ph - margin)
+    gsap.set(popupProject, { x: x, y: y })
+  }
 
   // SplitText — onSplit collecte toutes les lignes (titre + 2 paragraphes)
   const allLines = []
@@ -298,6 +304,8 @@ function closePopup() {
 // ─── About ────────────────────────────────────────────────────────────────────
 
 function closeAbout() {
+  if (window.stopSlider) window.stopSlider()
+  if (isMobile && window.lenis) window.lenis.start()
   gsap.killTweensOf(cursorArrows)
   gsap.to(cursorArrows, { opacity: 0, duration: 0.2, ease: 'power2.out' })
 
@@ -462,20 +470,27 @@ ctaWrapper.addEventListener('mouseleave', closeDropdown)
 
 document.addEventListener('click', event => {
   if (state.isLoading) return
+
   if (state.isAboutOpen) {
-    if (event.target.closest('.about__close')) { closeAbout(); return }
+    if (isMobile) {
+      if (event.target.closest('.about__close')) { closeAbout(); return }
+      return
+    }
     if (event.target.closest('a, summary, button, .accordion__content, .separator')) return
     closeAbout()
     return
   }
 
   if (state.isPopupOpen) {
-    closePopup()
-    state.isPopupOpen = false
+    if (event.target.closest('.overlay') || event.target.closest('.popup-project__close')) {
+      closePopup()
+      state.isPopupOpen = false
+    }
     return
   }
 
-  if (event.target.closest('.nav__logo, .carousel, .project__cta, .nav__about, .nav__chat-wrapper')) return
+  if (event.target.closest('.nav__logo, .carousel, .project__cta, .nav__about, .nav__chat-wrapper, .project-open-btn')) return
+  if (isMobile) return
 
   state.isPopupOpen = true
   gsap.killTweensOf(overlay)
@@ -485,3 +500,17 @@ document.addEventListener('click', event => {
 
   openPopup(event.clientX, event.clientY)
 })
+
+const projectOpenBtn = document.querySelector('.project-open-btn')
+if (projectOpenBtn) {
+  projectOpenBtn.addEventListener('click', function(event) {
+    event.stopPropagation()
+    if (state.isLoading || state.isPopupOpen) return
+    state.isPopupOpen = true
+    gsap.killTweensOf(overlay)
+    overlay.classList.add('is-open')
+    gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' })
+    window.setCursorState(true)
+    openPopup(0, 0)
+  })
+}

@@ -64,17 +64,21 @@
     cursor: none;
     user-select: none;
     -webkit-user-select: none;
+    overscroll-behavior-y: none;
   }
 
   img {
     -webkit-user-drag: none;
   }
 
-  .popup-about__inner {
-    user-select: text;
-    -webkit-user-select: text;
+  html,
+  body {
+    overscroll-behavior-y: none;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
+  html::-webkit-scrollbar,
   body::-webkit-scrollbar {
     display: none;
   }

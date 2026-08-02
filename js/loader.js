@@ -12,6 +12,22 @@ gsap.set('.nav',                { opacity: 0 })
 gsap.set('.project-info',       { opacity: 0 })
 gsap.set('.project-open-btn',   { opacity: 0 })
 document.body.classList.add('is-loading')
+gsap.set('.carousel__line', { opacity: 0 })  // ruban masqué pendant l'attente des polices
+
+// ─── onTicksReady : stub synchrone ────────────────────────────────────────────
+// main.js appelle window.onTicksReady() de façon synchrone, mais toute la timeline
+// est différée jusqu'au chargement des polices (document.fonts.ready) — sinon
+// SplitText mesure les lignes avec la police de repli et l'animation d'entrée du
+// titre/expertise casse sur mobile (1er chargement, police pas encore en cache).
+// On masque .carousel__line pendant l'attente pour éviter tout ruban partiel /
+// glitch de ticks au resize ; buildLoader le réaffiche puis joue le loader.
+let ticksReadyRequested = false
+window.onTicksReady = function() { ticksReadyRequested = true }
+
+// ─── Construction différée jusqu'au chargement des polices ────────────────────
+function buildLoader() {
+
+gsap.set('.carousel__line', { opacity: 1 })  // le loader va jouer : on réaffiche le ruban
 
 // ─── SplitText ────────────────────────────────────────────────────────────────
 
@@ -51,7 +67,7 @@ loaderTl.addLabel('ticksAndImages', '+=0.2')
 
 // ─── Hook : appelé depuis main.js après création des ticks ───────────────────
 
-window.onTicksReady = function() {
+function buildTicksAndExit() {
   const ci           = Math.round((needleX - currentX - 0.25) / TICK_SPACING)
   const centerImgIdx = lastImgIdx + imgsPerCopy
   const leftTicks    = allTicks.slice(0, ci)
@@ -114,9 +130,18 @@ window.onTicksReady = function() {
     ease: 'power1.out'
   }, 'ticksAndImages')
 
+  // On ne révèle (tween) QUE les ticks visibles à l'écran. Les ticks hors-champ
+  // sont déjà posés au repos (0.375) par main.js et ne reçoivent AUCUN tween :
+  // sinon, sur mobile (lerp rapide), l'aiguille atteint un tick lointain avant sa
+  // révélation, le tween démarre ensuite sous l'aiguille (scaleY 1 → 0.375) et la
+  // fait rétrécir. Le timing global (nTickMax) reste basé sur le ruban complet.
+  const VIS         = Math.ceil((window.innerWidth / 2) / TICK_SPACING) + 10
+  const leftReveal  = leftTicks.slice(Math.max(0, leftTicks.length - VIS))
+  const rightReveal = rightTicks.slice(0, VIS)
+
   // Ticks gauche — du centre vers la gauche
-  if (leftTicks.length) {
-    loaderTl.to(leftTicks, {
+  if (leftReveal.length) {
+    loaderTl.to(leftReveal, {
       scaleY: 0.375,
       duration: TICK_DUR,
       ease: 'power1.out',
@@ -125,8 +150,8 @@ window.onTicksReady = function() {
   }
 
   // Ticks droite — du centre vers la droite
-  if (rightTicks.length) {
-    loaderTl.to(rightTicks, {
+  if (rightReveal.length) {
+    loaderTl.to(rightReveal, {
       scaleY: 0.375,
       duration: TICK_DUR,
       ease: 'power1.out',
@@ -187,4 +212,19 @@ window.onTicksReady = function() {
 
   loaderTl.call(function() { window.showCursor(); state.isLoading = false }, null, '>')
 
+}
+
+  // La vraie fonction est prête : on l'expose et on rejoue l'appel de main.js
+  // s'il a déjà eu lieu pendant l'attente des polices.
+  window.onTicksReady = buildTicksAndExit
+  if (ticksReadyRequested) buildTicksAndExit()
+
+} // ── fin buildLoader ──
+
+// Attendre le chargement des polices avant de construire/lancer le loader
+// (sinon SplitText mesure mal les lignes → animation d'entrée cassée sur mobile).
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(buildLoader)
+} else {
+  buildLoader()
 }

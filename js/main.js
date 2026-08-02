@@ -1,5 +1,4 @@
 window.lenis = new Lenis({ autoRaf: true })
-
 const popupInner = document.querySelector('.popup-about__inner')
 const ro = new ResizeObserver(() => { window.lenis.resize() })
 ro.observe(popupInner)
@@ -100,7 +99,6 @@ gsap.set(previewImgs[1], { zIndex: 0 })
 const isMobile       = window.matchMedia('(max-width: 430px)').matches
 const lerpFactor     = isMobile ? 0.15 : 0.02
 let scrollDir        = 1
-let waveInitialized  = false
 let projectInfoReady = false
 
 function updateProjectInfo() {
@@ -393,13 +391,14 @@ document.addEventListener('touchstart', function(event) {
 }, { passive: true })
 
 document.addEventListener('touchmove', function(event) {
+  if (state.isAboutOpen) return
   if (window.scrollY === 0 && event.touches[0].clientY > pullStartY) event.preventDefault()
 }, { passive: false })
 
 window.addEventListener('touchmove', function(event) {
   if (!carouselDragging) return
-  event.preventDefault()
   if (state.isPopupOpen || state.isAboutOpen) return
+  event.preventDefault()
   const dx    = event.touches[0].clientX - carouselDragStart
   const dy    = event.touches[0].clientY - carouselDragStartY
   const delta = Math.abs(dx) >= Math.abs(dy) ? dx : dy
@@ -496,33 +495,47 @@ function moveTicks() {
   line.style.transform = `translateX(${currentX}px)`
 
   const ci = Math.round((needleX - currentX - 0.25) / TICK_SPACING)
-  if (ci < 0 || ci >= allTicks.length || ci === lastCi) return
+  // Hors des bornes du ruban de ticks : on réinitialise lastCi pour que la
+  // ré-entrée reparte proprement (aiguille seule, sans gap fantôme).
+  if (ci < 0 || ci >= allTicks.length) { lastCi = -1; return }
 
-  if (lastCi >= 0 && lastCi < allTicks.length) {
+  // La vague ne se déclenche que si l'aiguille a changé de tick. En revanche le
+  // bloc "aiguille" plus bas s'exécute à CHAQUE frame (même ci === lastCi) pour
+  // ré-affirmer le tick rouge grand → il ne peut jamais rester rétréci ni perdu.
+  if (ci !== lastCi && lastCi >= 0 && lastCi < allTicks.length) {
     const step = ci > lastCi ? 1 : -1
     const gap  = Math.abs(ci - lastCi)
 
     if (gap > 50) {
-      const t = allTicks[lastCi]
-      if (!t._ret) {
-        if (!waveInitialized) gsap.set(t, { scaleY: 0.375, backgroundColor: '#191919' })
-        activateAndReturn(t)
-      }
+      // Téléportation de la boucle infinie : loopCheck a décalé currentX de
+      // copyWidth, donc ci saute d'une copie entière alors que rien n'a bougé
+      // visuellement (la même image reste sous l'aiguille). On resynchronise
+      // sans aucune vague : on remet l'ancienne aiguille (désormais hors-centre)
+      // au repos silencieusement — c'est le bloc ciTick plus bas qui repose la
+      // bonne aiguille centrée en rouge. Aucun flash, aucun rétrécissement.
+      const prev = allTicks[lastCi]
+      if (prev._tween) { prev._tween.kill(); prev._tween = null }
+      prev._ret = false
+      const pqi = waveQueue.indexOf(prev)
+      if (pqi !== -1) waveQueue.splice(pqi, 1)
+      gsap.set(prev, { scaleY: 0.375, backgroundColor: '#191919' })
     } else {
       for (let j = lastCi; j !== ci; j += step) {
         if (j < 0 || j >= allTicks.length) continue
         const tick = allTicks[j]
         if (tick._ret) continue
-        if (!waveInitialized && j === lastCi) gsap.set(tick, { scaleY: 0.375, backgroundColor: '#191919' })
         activateAndReturn(tick)
       }
     }
-    waveInitialized = true
   }
 
   const ciTick = allTicks[ci]
   ciTick._ret = false
-  if (ciTick._tween) { ciTick._tween.kill(); ciTick._tween = null }
+  // killTweensOf (et pas seulement _tween) : tue AUSSI le tween de révélation du
+  // loader encore actif sur ce tick — sinon ce tween réimpose scaleY 0.375 frame
+  // après frame et l'aiguille rouge rétrécit tant que le loader n'est pas terminé.
+  gsap.killTweensOf(ciTick)
+  ciTick._tween = null
   const qi = waveQueue.indexOf(ciTick)
   if (qi !== -1) waveQueue.splice(qi, 1)
   gsap.set(ciTick, { scaleY: 1, backgroundColor: '#E14942' })
@@ -531,7 +544,30 @@ function moveTicks() {
 }
 
 moveTicks()
-gsap.set(allTicks, { scaleY: 0 })
+// Seuls les ticks réellement visibles à l'écran démarrent cachés (scaleY 0) pour la
+// vague d'intro du loader. Tous les autres (hors-champ) sont posés directement au
+// repos (0.375) : le ruban est donc complet et FIXE hors écran, et un drag les
+// pulsera (vague directionnelle) au lieu de les "révéler" depuis le bas — la
+// révélation du loader ne portait que sur ~40-130 ticks visibles, pas sur ~990.
+const ciInit      = Math.round((needleX - currentX - 0.25) / TICK_SPACING)
+const visibleHalf = Math.ceil((window.innerWidth / 2) / TICK_SPACING) + 10
+allTicks.forEach(function(tick, i) {
+  gsap.set(tick, { scaleY: Math.abs(i - ciInit) <= visibleHalf ? 0 : 0.375 })
+})
+
+// Même principe pour les images du carousel : la révélation clipPath du loader
+// (du centre vers l'extérieur, ~6.5s) porte sur les ~120 images alors que seules
+// celles à l'écran sont vues pendant l'intro. On pré-révèle les images hors-champ
+// (clipPath ouvert) pour que le tween du loader soit un no-op sur elles — sinon
+// elles "réapparaissent" quand un drag les ramène à l'écran avant la fin du loader.
+const REVEAL_MARGIN = 120  // px de marge autour de l'écran
+allImgs.forEach(function(img, i) {
+  const screenX = natCenters[i] + currentX
+  if (screenX < -REVEAL_MARGIN || screenX > window.innerWidth + REVEAL_MARGIN) {
+    gsap.set(img, { clipPath: 'inset(0% 0 0 0)' })
+  }
+})
+
 if (window.onTicksReady) window.onTicksReady()
 
 let resizeTimer
@@ -539,6 +575,17 @@ window.addEventListener('resize', () => {
   clearTimeout(resizeTimer)
   resizeTimer = setTimeout(function() {
     needleX = window.innerWidth / 2
+
+    // Étendre le ruban si la fenêtre s'est élargie (ex. mobile responsive → desktop) :
+    // TICK_COUNT est figé au chargement, donc sans ça il manque des ticks à droite.
+    // On ajoute seulement les <span> manquants, au repos (scaleY 0.375 via le CSS).
+    const neededTicks = Math.ceil((window.innerWidth - (needleX - midLeft)) / TICK_SPACING) + 10
+    for (let i = allTicks.length; i < neededTicks; i++) {
+      const tick = document.createElement('span')
+      tick.classList.add('carousel__tick')
+      line.appendChild(tick)
+      allTicks.push(tick)
+    }
 
     waveQueue.forEach(tick => {
       if (tick._tween) { tick._tween.kill(); tick._tween = null }

@@ -32,6 +32,26 @@ window.showCursor = function() {
   }
 }
 
+// Ré-évaluation au resize (mobile responsive ↔ desktop). isMobile / cursorRevealDone
+// sont figés au chargement : sans ça, en passant du responsive mobile au desktop, le
+// curseur custom reste caché jusqu'à un refresh. On lit matchMedia en direct.
+let cursorResizeTimer
+window.addEventListener('resize', function() {
+  clearTimeout(cursorResizeTimer)
+  cursorResizeTimer = setTimeout(function() {
+    if (!cursorReady) return  // le loader n'a pas encore lancé showCursor : il s'en chargera
+    if (window.matchMedia('(max-width: 430px)').matches) {
+      cursor.style.display = 'none'  // repassé en mobile : curseur masqué
+      cursorRevealDone = true
+    } else if (window.getComputedStyle(cursor).display === 'none') {
+      // passé en desktop et curseur caché (via CSS .cursor{display:none} OU inline) :
+      // getComputedStyle capte les deux, contrairement à cursor.style.display.
+      cursorRevealDone = true
+      revealCursor()                  // révélé tout de suite, sans attendre un mousemove
+    }
+  }, 100)
+})
+
 // Révélation si la souris a bougé avant showCursor + positionnement popup
 window.addEventListener('mousemove', function(event) {
   if (cursorReady && !cursorRevealDone) {

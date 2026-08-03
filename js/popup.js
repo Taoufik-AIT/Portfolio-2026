@@ -316,7 +316,7 @@ function closePopup() {
 
 function closeAbout() {
   if (window.stopSlider) window.stopSlider()
-  if (isMobile && window.lenis) window.lenis.start()
+  if (window.lenis) window.lenis.start()   // toujours restaurer Lenis (le mode a pu changer depuis l'ouverture)
   gsap.killTweensOf(cursorArrows)
   gsap.to(cursorArrows, { opacity: 0, duration: 0.2, ease: 'power2.out' })
 

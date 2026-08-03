@@ -102,6 +102,12 @@ let   lerpFactor     = isMobile ? 0.15 : 0.02
 mqMobile.addEventListener('change', function(e) {
   isMobile   = e.matches
   lerpFactor = isMobile ? 0.15 : 0.02
+  // About ouvert au moment du basculement : l'état Lenis doit suivre le layout
+  // (mobile = scroll interne → Lenis stoppé ; desktop = scroll de page → Lenis actif).
+  if (state.isAboutOpen && window.lenis) {
+    if (isMobile) window.lenis.stop()
+    else { window.lenis.start(); window.lenis.resize() }
+  }
 })
 let scrollDir        = 1
 let projectInfoReady = false

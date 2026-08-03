@@ -678,6 +678,13 @@
   padding: 0 var(--grid-margin);
   pointer-events: none;
   z-index: 9999;
+  transform: scaleY(0);
+  transform-origin: bottom;                            /* révélation depuis le bas */
+  transition: transform 0.5s ease;
+}
+
+.grid-overlay.is-visible {
+  transform: scaleY(1);
 }
 
 .grid-overlay__col {

@@ -625,3 +625,13 @@ const dropdown  = document.querySelector('.nav__dropdown')
 ctaButton.addEventListener('click', function() {
   dropdown.classList.toggle('is-open')
 })
+
+// ─── Grille de dev (pixel-perfect) — toggle 'g', localhost uniquement ─────────
+if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+  document.addEventListener('keydown', function(e) {
+    if (e.key.toLowerCase() === 'g') {
+      const grid = document.querySelector('.grid-overlay')
+      if (grid) grid.classList.toggle('is-visible')
+    }
+  })
+}

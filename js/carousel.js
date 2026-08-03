@@ -11,7 +11,7 @@ function updateSlider(activeIndex) {
 updateSlider(sliderIndex)
 
 window.startSlider = function() {
-  if (sliderTimer) return
+  if (sliderTimer || !sliderImages.length) return
   sliderTimer = setInterval(function() {
     sliderIndex = (sliderIndex + 1) % sliderImages.length
     updateSlider(sliderIndex)

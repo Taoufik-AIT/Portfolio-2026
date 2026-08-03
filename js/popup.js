@@ -325,8 +325,6 @@ function closeAbout() {
   window.setCursorState(false)
   accordionItems.forEach(function(item) { item.removeAttribute('open') })
   if (aboutOpenTl) { aboutOpenTl.kill(); aboutOpenTl = null }
-  aboutSplits.forEach(function(s) { s.split.revert() })
-  aboutSplits = []
   aboutTriggers.forEach(function(t) { t.kill() })
   aboutTriggers = []
   closeOverlay(1.4)
@@ -335,6 +333,9 @@ function closeAbout() {
     duration: 1,
     ease: 'power3.inOut',
     onComplete: function() {
+      if (state.isAboutOpen) return   // rouvert pendant la fermeture : openAbout a déjà tout géré
+      aboutSplits.forEach(function(s) { s.split.revert() })
+      aboutSplits = []
       gsap.set(popupAbout, { display: 'none' })
       if (window.lenis) window.lenis.resize()
     }

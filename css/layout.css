@@ -391,6 +391,7 @@
   position: relative;
   width: 120px;
   height: 90px;
+  margin-top: 6px;   /* aligne le haut du slider sur le haut visible du label/chiffre (line-height 1.5) */
   overflow: hidden;
 }
 
@@ -841,6 +842,7 @@
     right: 113px;
     width: 90px;
     height: 67px;
+    margin-top: 0;   /* neutralise le margin desktop (ici positionné en absolu via top) */
   }
 
   .about__accordion .accordion__title {

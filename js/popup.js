@@ -5,6 +5,18 @@ const popupAbout   = document.querySelector('.popup-about')
 const overlay      = document.querySelector('.overlay')
 const navAbout     = document.querySelector('.nav__about')
 
+// Overlay (fond flou) — factorisé : ouverture (about, clic projet, bouton +)
+// et fermeture (closePopup, closeAbout).
+function openOverlay(duration) {
+  gsap.killTweensOf(overlay)
+  overlay.classList.add('is-open')
+  gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: duration, ease: 'power2.out' })
+}
+function closeOverlay(duration) {
+  gsap.killTweensOf(overlay)
+  gsap.to(overlay, { opacity: 0, duration: duration, delay: 0.4, ease: 'power2.out', onComplete: () => overlay.classList.remove('is-open') })
+}
+
 // ─── Éléments ─────────────────────────────────────────────────────────────────
 
 const cursorArrows = document.querySelectorAll('.cursor__arrow')
@@ -286,8 +298,7 @@ function closePopup() {
     window.setCursorState(false)
   })
 
-  gsap.killTweensOf(overlay)
-  gsap.to(overlay, { opacity: 0, duration: 0.7, delay: 0.4, ease: 'power2.out', onComplete: () => overlay.classList.remove('is-open') })
+  closeOverlay(0.7)
 
   gsap.to(popupProject, {
     clipPath: 'inset(0% 0% 100% 0%)',
@@ -318,8 +329,7 @@ function closeAbout() {
   aboutSplits = []
   aboutTriggers.forEach(function(t) { t.kill() })
   aboutTriggers = []
-  gsap.killTweensOf(overlay)
-  gsap.to(overlay, { opacity: 0, duration: 1.4, delay: 0.4, ease: 'power2.out', onComplete: () => overlay.classList.remove('is-open') })
+  closeOverlay(1.4)
   gsap.to(popupAbout, {
     clipPath: 'inset(0% 0% 100% 0%)',
     duration: 1,
@@ -338,9 +348,7 @@ navAbout.addEventListener('click', event => {
   state.isAboutOpen = true
   navAbout.classList.add('is-open')
   window.setCursorState(true)
-  gsap.killTweensOf(overlay)
-  overlay.classList.add('is-open')
-  gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 1.2, ease: 'power2.out' })
+  openOverlay(1.2)
   openAbout()
 })
 
@@ -493,9 +501,7 @@ document.addEventListener('click', event => {
   if (isMobile) return
 
   state.isPopupOpen = true
-  gsap.killTweensOf(overlay)
-  overlay.classList.add('is-open')
-  gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' })
+  openOverlay(0.5)
   window.setCursorState(true)
 
   openPopup(event.clientX, event.clientY)
@@ -507,9 +513,7 @@ if (projectOpenBtn) {
     event.stopPropagation()
     if (state.isLoading || state.isPopupOpen) return
     state.isPopupOpen = true
-    gsap.killTweensOf(overlay)
-    overlay.classList.add('is-open')
-    gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' })
+    openOverlay(0.5)
     window.setCursorState(true)
     openPopup(0, 0)
   })

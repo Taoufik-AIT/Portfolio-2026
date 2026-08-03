@@ -96,8 +96,13 @@ gsap.set(previewImgs[1], { zIndex: 0 })
   w.appendChild(el)
 })
 
-const isMobile       = window.matchMedia('(max-width: 430px)').matches
-const lerpFactor     = isMobile ? 0.15 : 0.02
+const mqMobile       = window.matchMedia('(max-width: 430px)')
+let   isMobile       = mqMobile.matches
+let   lerpFactor     = isMobile ? 0.15 : 0.02
+mqMobile.addEventListener('change', function(e) {
+  isMobile   = e.matches
+  lerpFactor = isMobile ? 0.15 : 0.02
+})
 let scrollDir        = 1
 let projectInfoReady = false
 

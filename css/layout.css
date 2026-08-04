@@ -16,6 +16,7 @@
   gap: 4px;
   z-index: 50;
   pointer-events: none;
+  touch-action: manipulation;
 }
 
 .nav {
@@ -757,6 +758,7 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     padding-bottom: calc(40px + env(safe-area-inset-bottom));
+    touch-action: manipulation;
     --about-col1: 35px;
     --about-gap: 12px;
   }

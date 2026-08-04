@@ -1,6 +1,14 @@
 // cursor, barV, barH, cursorMoved, mouseX, mouseY, revealCursor(), initHoverTargets()
 // sont fournis par cursor-core.js chargé avant ce fichier
 
+window.addEventListener('wheel', function(event) {
+  if (event.ctrlKey) event.preventDefault()
+}, { passive: false })
+
+document.addEventListener('gesturestart', function(event) {
+  event.preventDefault()
+})
+
 // ─── Ticks ────────────────────────────────────────────────────────────────────
 
 const line      = document.querySelector('.carousel__line')

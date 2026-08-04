@@ -350,6 +350,14 @@ function updateImageContrast(activeProject) {
 // ─── Wheel ────────────────────────────────────────────────────────────────────
 
 window.addEventListener('wheel', function(event) {
+  if (event.ctrlKey) event.preventDefault()
+}, { passive: false })
+
+document.addEventListener('gesturestart', function(event) {
+  event.preventDefault()
+})
+
+window.addEventListener('wheel', function(event) {
   if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) event.preventDefault()
   if (state.isLoading || state.isPopupOpen || state.isAboutOpen) return
   const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY

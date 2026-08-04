@@ -52,6 +52,7 @@ function openAbout() {
   aboutTriggers = []
 
   gsap.set(popupAbout, { display: 'block', clipPath: 'inset(100% 0% 0% 0%)' })
+  popupAbout.scrollTop = 0
   if (window.lenis) window.lenis.resize()
 
   // ─── SplitText (recréé à chaque ouverture) ─────────────────────────────────

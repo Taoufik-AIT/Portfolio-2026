@@ -91,7 +91,9 @@ function openAbout() {
 
   ScrollTrigger.refresh()
 
-  function inVP(el) { if (isMobile) return true; return el && el.getBoundingClientRect().top < window.innerHeight }
+  const aboutScroller = isMobile ? popupAbout : window
+
+  function inVP(el) { return el && el.getBoundingClientRect().top < window.innerHeight }
 
   let t = 1.0
 
@@ -103,6 +105,7 @@ function openAbout() {
     } else {
       aboutTriggers.push(ScrollTrigger.create({
         trigger: sep, start: 'top 90%', once: true,
+        scroller: aboutScroller,
         onEnter: function() { gsap.to(sep, { scaleX: 1, duration: 0.9, ease: 'power2.out' }) }
       }))
     }
@@ -136,6 +139,7 @@ function openAbout() {
         const slider = sec.slider
         aboutTriggers.push(ScrollTrigger.create({
           trigger: ref, start: 'top 90%', once: true,
+          scroller: aboutScroller,
           onEnter: function() {
             gsap.to(allLNLines, { yPercent: 0, duration: 1.0, ease: 'power3.out' })
             if (slider) gsap.to(slider, { opacity: 1, duration: 0.9, ease: 'power2.out' })
@@ -152,6 +156,7 @@ function openAbout() {
       } else {
         aboutTriggers.push(ScrollTrigger.create({
           trigger: sec.paras[0], start: 'top 90%', once: true,
+          scroller: aboutScroller,
           onEnter: function() { gsap.to(allParaLines, { yPercent: 0, duration: 1.1, ease: 'power3.out', stagger: 0.08 }) }
         }))
       }
@@ -173,6 +178,7 @@ function openAbout() {
     } else {
       aboutTriggers.push(ScrollTrigger.create({
         trigger: aboutAccordionSection, start: 'top 92%', once: true,
+        scroller: aboutScroller,
         onEnter: function() {
           aboutAccordionData.forEach(function(item, i) {
             const textLines = (item.letterSplit ? item.letterSplit.lines : [])
@@ -202,6 +208,7 @@ function openAbout() {
     } else {
       aboutTriggers.push(ScrollTrigger.create({
         trigger: aboutLinksSection, start: 'top 90%', once: true,
+        scroller: aboutScroller,
         onEnter: function() {
           if (linksLabelSplit) gsap.to(linksLabelSplit.lines, { yPercent: 0, duration: 0.8, ease: 'power3.out' })
           linkSplits.forEach(function(split, i) {

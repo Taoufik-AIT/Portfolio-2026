@@ -454,8 +454,10 @@
   transition: color 0.25s ease;
 }
 
-.accordion__header:hover {
-  color: var(--color-gray);
+@media (hover: hover) and (pointer: fine) {
+  .accordion__header:hover {
+    color: var(--color-gray);
+  }
 }
 
 
@@ -574,8 +576,10 @@
   transition: color 0.25s ease;
 }
 
-.about__link:hover {
-  color: var(--color-gray);
+@media (hover: hover) and (pointer: fine) {
+  .about__link:hover {
+    color: var(--color-gray);
+  }
 }
 
 .about__link-arrow {

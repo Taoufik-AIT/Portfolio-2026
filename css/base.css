@@ -115,7 +115,12 @@
   transition: color 0.3s ease;
 }
 
-.nav__about:hover,
+@media (hover: hover) and (pointer: fine) {
+  .nav__about:hover {
+    color: var(--color-gray);
+  }
+}
+
 .nav__about.is-open {
   color: var(--color-gray);
 }

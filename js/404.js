@@ -20,8 +20,9 @@ for (let i = 0; i < tickCount; i++) {
 // ─── Cursor — révélation au premier mouvement ─────────────────────────────────
 
 let cursorRevealDone = false
+const isMobile404 = window.matchMedia('(max-width: 430px)').matches
 window.addEventListener('mousemove', function() {
-  if (!cursorRevealDone) {
+  if (!isMobile404 && !cursorRevealDone) {
     cursorRevealDone = true
     revealCursor()
   }

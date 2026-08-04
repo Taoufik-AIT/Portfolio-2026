@@ -753,7 +753,7 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     padding-bottom: calc(40px + env(safe-area-inset-bottom));
-    --about-col1: 16px;
+    --about-col1: 35px;
     --about-gap: 12px;
   }
 
@@ -853,7 +853,12 @@
   }
 
   .about__accordion .accordion__title {
-    margin-left: calc(100% - var(--about-col1) - var(--about-gap) - 113px - 90px);
+    margin-left: calc(100% - 35px - var(--about-gap) - 113px - 90px);
+  }
+
+  .about__accordion .accordion__content {
+    /* même position que .accordion__title : (col1+gap) + le même décalage (gap s'annule) */
+    padding-left: calc(var(--about-col1) + 100% - 35px - 113px - 90px);
   }
 
   .about__links {
@@ -866,7 +871,7 @@
 
   .about__links-label {
     flex-shrink: 0;
-    width: 35px;
+    width: var(--about-col1);
   }
 
   .about__links-list {

@@ -997,3 +997,48 @@
   }
 }
 
+/* ── Overlay rotation mobile ── */
+
+.rotate-overlay {
+  display: none;
+}
+
+.rotate-overlay__icon {
+  width: 48px;
+  height: 48px;
+  color: var(--color-dark);
+  animation: rotate-half-turn 2.8s ease infinite;
+}
+
+.rotate-overlay__text {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--color-dark);
+  text-align: center;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+
+.rotate-overlay__accent {
+  color: var(--color-red);
+}
+
+@keyframes rotate-half-turn {
+  0%, 100% { transform: rotate(-45deg); }
+  50%      { transform: rotate(-140deg); }
+}
+
+@media (orientation: landscape) and (max-height: 430px) {
+  .rotate-overlay {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    background-color: var(--color-bg);
+    z-index: 10000;
+  }
+}
+

@@ -713,6 +713,10 @@
     left: calc(259px - 50vw);
   }
 
+  .project__name {
+    font-size: 11px;
+  }
+
   .project__meta {
     white-space: nowrap;
     font-size: 11px;

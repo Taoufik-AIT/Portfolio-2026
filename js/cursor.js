@@ -22,7 +22,7 @@ let cursorRevealDone = false
 
 window.showCursor = function() {
   cursorReady = true
-  if (window.matchMedia('(max-width: 430px)').matches) {
+  if (isCursorTouch()) {
     cursorRevealDone = true
     return
   }
@@ -40,7 +40,7 @@ window.addEventListener('resize', function() {
   clearTimeout(cursorResizeTimer)
   cursorResizeTimer = setTimeout(function() {
     if (!cursorReady) return  // le loader n'a pas encore lancé showCursor : il s'en chargera
-    if (window.matchMedia('(max-width: 430px)').matches) {
+    if (isCursorTouch()) {
       cursor.style.display = 'none'  // repassé en mobile : curseur masqué
       cursorRevealDone = true
     } else if (window.getComputedStyle(cursor).display === 'none') {

@@ -252,7 +252,7 @@ function openPopup(clientX, clientY) {
   gsap.set(dts,        { y: '105%' })
   gsap.set(dds,        { y: '105%' })
 
-  if (isMobile) {
+  if (isCursorTouch()) {
     gsap.set(popupProject, { x: 0, y: 0 })
   } else {
     const pw     = popupProject.offsetWidth
@@ -507,7 +507,7 @@ document.addEventListener('click', event => {
   }
 
   if (event.target.closest('.nav__logo, .carousel, .project__cta, .nav__about, .nav__chat-wrapper, .project-open-btn')) return
-  if (isMobile) return
+  if (isCursorTouch()) return
 
   state.isPopupOpen = true
   openOverlay(0.5)

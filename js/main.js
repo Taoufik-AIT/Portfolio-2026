@@ -99,6 +99,13 @@ gsap.set(previewImgs[1], { zIndex: 0 })
 const mqMobile       = window.matchMedia('(max-width: 430px)')
 let   isMobile       = mqMobile.matches
 let   lerpFactor     = isMobile ? 0.15 : 0.02
+
+// Flag scopé au curseur mouse-follow + déclenchement du popup projet — distinct
+// de isMobile (qui pilote Lenis/ScrollTrigger et ne doit pas être élargi).
+function isCursorTouch() {
+  return window.matchMedia('(max-width: 1024px)').matches
+}
+
 mqMobile.addEventListener('change', function(e) {
   isMobile   = e.matches
   lerpFactor = isMobile ? 0.15 : 0.02

@@ -91,7 +91,7 @@ function openAbout() {
 
   ScrollTrigger.refresh()
 
-  const aboutScroller = isMobile ? popupAbout : window
+  const aboutScroller = isAboutInternalScroll() ? popupAbout : window
 
   function inVP(el) { return el && el.getBoundingClientRect().top < window.innerHeight }
 
@@ -489,7 +489,7 @@ document.addEventListener('click', event => {
   if (state.isLoading) return
 
   if (state.isAboutOpen) {
-    if (isMobile) {
+    if (isCursorTouch()) {
       if (event.target.closest('.about__close')) { closeAbout(); return }
       return
     }

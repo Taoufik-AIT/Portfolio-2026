@@ -106,6 +106,12 @@ function isCursorTouch() {
   return window.matchMedia('(max-width: 1024px)').matches
 }
 
+// Vrai quand .popup-about est en layout plein-écran à scroll interne
+// (mobile + tablette) plutôt qu'en position absolute suivant le scroll de la page.
+function isAboutInternalScroll() {
+  return window.matchMedia('(max-width: 1024px)').matches
+}
+
 mqMobile.addEventListener('change', function(e) {
   isMobile   = e.matches
   lerpFactor = isMobile ? 0.15 : 0.02

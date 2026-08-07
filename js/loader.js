@@ -75,7 +75,7 @@ function buildTicksAndExit() {
 
   const TICK_DUR  = 0.5
   const IMG_DUR   = 0.7
-  const EACH_TICK = 0.012  // écart par tick — vague clairement perceptible
+  const EACH_TICK = window.matchMedia('(min-width: 1600px)').matches ? 0.008 : 0.009  // écart par tick — vague clairement perceptible, réduit sur grand écran (plus de ticks à balayer)
 
   const nTickMax = Math.max(leftTicks.length, rightTicks.length)
   const nImgMax  = Math.max(centerImgIdx, allImgs.length - 1 - centerImgIdx)

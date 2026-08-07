@@ -414,7 +414,7 @@
   display: grid;
   grid-template-columns: var(--about-col1) 1fr;
   gap: var(--about-gap);
-  padding-top: 10px;
+  padding-top: 5px;
   padding-bottom: 85px;
 }
 
@@ -1253,6 +1253,10 @@
     right: -185px;
   }
 
+  .popup-project {
+    width: 400px;
+  }
+
   .popup__title {
     font-size: 15px;
   }
@@ -1266,11 +1270,7 @@
   .popup-about {
     width: 980px;
     font-size: 18px;
-    --about-col1: 340px;
-  }
-
-  .about__section {
-    padding-top: 5px;
+    --about-col1: 355px;
   }
 
   .about__portrait-wrapper {

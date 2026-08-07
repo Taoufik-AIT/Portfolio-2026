@@ -552,7 +552,9 @@
   display: grid;
   grid-template-columns: var(--about-col1) 1fr;
   gap: var(--about-gap);
-  padding: 1px 0;
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 1px;
 }
 
 .about__links-label {
@@ -622,6 +624,7 @@
   background-color: rgba(25, 25, 25, 0.75);
   backdrop-filter: blur(8px) saturate(1.5);
   -webkit-backdrop-filter: blur(8px) saturate(1.5);
+  will-change: transform;
   pointer-events: none;
   z-index: 9998;
   top: 0;
@@ -797,7 +800,7 @@
     padding-bottom: calc(40px + env(safe-area-inset-bottom));
     touch-action: manipulation;
     font-size: 11px;
-    --about-col1: 170px;
+    --about-col1: 165px;
   }
 
   .popup-about::after {
@@ -1200,6 +1203,102 @@
     width: 1px;
     height: 14px;
     transform: translate(-50%, -50%) rotate(45deg);
+  }
+}
+
+/* ── Grand écran (≥ 1600px) ────────────────────────────────────────────────── */
+
+@media (min-width: 1600px) {
+  
+  .preview-wrapper {
+    width: 1100px;
+  }
+
+  .preview {
+    height: 648px;
+  }
+
+  .project-info {
+    left: -711px;
+  }
+
+  .nav__description {
+    position: absolute;
+    top: 22px;
+    left: 730px;
+    font-size: 16px;
+  }
+
+  .nav__logo {
+    font-size: 22px;
+  }
+
+  .nav__links {
+    font-size: 16px;
+  }
+
+  .nav__cta {
+    font-size: 16px;
+  }
+
+  .project__name {
+    font-size: 18px;
+  }
+
+  .project__meta {
+    font-size: 17px;
+  }
+
+  .project__cta {
+    right: -185px;
+  }
+
+  .popup__title {
+    font-size: 15px;
+  }
+
+  .popup__description,
+  .popup__details dt,
+  .popup__details dd {
+    font-size: 17px;
+  }
+
+  .popup-about {
+    width: 980px;
+    font-size: 18px;
+    --about-col1: 340px;
+  }
+
+  .about__section {
+    padding-top: 5px;
+  }
+
+  .about__portrait-wrapper {
+    margin-bottom: 180px;
+  }
+
+  .about__section {
+    padding-bottom: 110px;
+  }
+
+  .about__links {
+    padding-bottom: 1px;
+  }
+
+  .about__section:has(.about__text) {
+    padding-bottom: 180px;
+  }
+
+  .about__accordion {
+    margin-bottom: 185px;
+  }
+
+  .about__portrait-caption,
+  .accordion__letter,
+  .accordion__title,
+  .about__links-label,
+  .about__link {
+    font-size: 17px;
   }
 }
 

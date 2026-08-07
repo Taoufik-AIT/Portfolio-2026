@@ -53,7 +53,6 @@ function openAbout() {
 
   gsap.set(popupAbout, { display: 'block', clipPath: 'inset(100% 0% 0% 0%)' })
   popupAbout.scrollTop = 0
-  if (window.lenis) window.lenis.resize()
 
   // ─── SplitText (recréé à chaque ouverture) ─────────────────────────────────
 
@@ -104,7 +103,7 @@ function openAbout() {
       t += 0.12
     } else {
       aboutTriggers.push(ScrollTrigger.create({
-        trigger: sep, start: 'top 90%', once: true,
+        trigger: sep, start: 'top 100%', once: true,
         scroller: aboutScroller,
         onEnter: function() { gsap.to(sep, { scaleX: 1, duration: 0.9, ease: 'power2.out' }) }
       }))
@@ -207,7 +206,7 @@ function openAbout() {
       })
     } else {
       aboutTriggers.push(ScrollTrigger.create({
-        trigger: aboutLinksSection, start: 'top 90%', once: true,
+        trigger: aboutLinksSection, start: 'top 100%', once: true,
         scroller: aboutScroller,
         onEnter: function() {
           if (linksLabelSplit) gsap.to(linksLabelSplit.lines, { yPercent: 0, duration: 0.8, ease: 'power3.out' })
@@ -222,6 +221,14 @@ function openAbout() {
       }))
     }
   }
+
+  // Les triggers ci-dessus sont calculés juste après ScrollTrigger.refresh() (ligne 92),
+  // avant que la mise en page (police/largeur agrandies, SplitText) ne soit stabilisée à 100%.
+  // Un second refresh différé à la frame suivante recalcule les positions sur la géométrie finale.
+  setTimeout(function() {
+    if (window.lenis) window.lenis.resize()
+    ScrollTrigger.refresh()
+  }, 200)
 }
 
 // Overflow hidden sur dt et dd (une seule fois à l'init)

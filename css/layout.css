@@ -772,6 +772,17 @@
     height: 14px;
     transform: translate(-50%, -50%) rotate(45deg);
   }
+}
+
+@media (min-width: 431px) and (max-width: 1024px) and (orientation: portrait) {
+  .preview-wrapper {
+    width: calc(100% - (2 * var(--grid-margin)));
+  }
+
+  .preview {
+    aspect-ratio: 775 / 456;
+    height: auto;
+  }
 
   .popup-about {
     position: fixed;
@@ -892,6 +903,13 @@
     width: 1px;
     height: 14px;
     transform: translate(-50%, -50%) rotate(45deg);
+  }
+}
+
+@media (min-width: 431px) and (max-width: 1024px) and (orientation: portrait) {
+  .project-open-btn {
+    top: calc(50vh + 29vw - 10px);
+    right: var(--grid-margin);
   }
 }
 

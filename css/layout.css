@@ -1029,6 +1029,7 @@
     position: relative;
     padding-top: 10px;
     padding-bottom: 40px;
+    padding-top: 5px;
   }
 
   .about__number {
@@ -1081,7 +1082,9 @@
     flex-direction: row;
     align-items: flex-start;
     gap: var(--about-gap);
-    padding-top: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    
   }
 
   .about__links-label {

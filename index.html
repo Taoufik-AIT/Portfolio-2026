@@ -4,6 +4,20 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Taoufik Aït — Frontend Developer & Designer</title>
+        <style>
+          /* ── Masquage critique en ligne — protège contre le flash sur réseau lent,
+             avant même que les feuilles de style externes n'aient fini de charger. ── */
+          body.is-loading .nav,
+          body.is-loading .project-info,
+          body.is-loading .carousel__triangle,
+          body.is-loading .carousel__label { opacity: 0; }
+          body.is-loading .carousel__img { clip-path: inset(100% 0 0 0); }
+          body.is-loading .carousel__separator { transform: scaleY(0); }
+          body.is-loading .preview-wrapper { visibility: hidden; opacity: 0; }
+          body.is-loading .loader { display: flex; }
+          body.is-loading .loader__title-wrapper,
+          body.is-loading .loader__expertise-wrapper { visibility: hidden; }
+        </style>
         <link rel="preload" href="fonts/serif-italic.woff2" as="font" type="font/woff2" crossorigin>
         <link rel="stylesheet" href="css/reset.css">
         <link rel="stylesheet" href="css/base.css">

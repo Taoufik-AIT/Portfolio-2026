@@ -160,6 +160,8 @@ body.is-loading .carousel__label { opacity: 0; }
 
 body.is-loading .carousel__img { clip-path: inset(100% 0 0 0); }
 
+body.is-loading .carousel__separator { transform: scaleY(0); }
+
 body.is-loading .preview-wrapper { visibility: hidden; opacity: 0; }
 
 body.is-loading .loader { display: flex; }

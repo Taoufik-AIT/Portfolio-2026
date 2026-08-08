@@ -98,7 +98,7 @@ gsap.set(previewImgs[1], { zIndex: 0 })
 
 const mqMobile       = window.matchMedia('(max-width: 430px)')
 let   isMobile       = mqMobile.matches
-let   lerpFactor     = isMobile ? 0.15 : 0.02
+let   lerpFactor     = isMobile ? 0.15 : 0.04
 
 // Flag scopé au curseur mouse-follow + déclenchement du popup projet — distinct
 // de isMobile (qui pilote Lenis/ScrollTrigger et ne doit pas être élargi).
@@ -114,7 +114,7 @@ function isAboutInternalScroll() {
 
 mqMobile.addEventListener('change', function(e) {
   isMobile   = e.matches
-  lerpFactor = isMobile ? 0.15 : 0.02
+  lerpFactor = isMobile ? 0.15 : 0.04
   // About ouvert au moment du basculement : l'état Lenis doit suivre le layout
   // (mobile = scroll interne → Lenis stoppé ; desktop = scroll de page → Lenis actif).
   if (state.isAboutOpen && window.lenis) {

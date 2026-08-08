@@ -101,6 +101,7 @@
 
             <div class="preview-wrapper">
                 <section class="preview">
+                    <!-- 2 images empilées pour le crossfade entre projets (voir main.js, previewImgs) -->
                     <img draggable="false" src="images/compressedImage.jpg" alt="" class="preview__img">
                     <img draggable="false" src="images/compressedImage.jpg" alt="" class="preview__img">
                 </section>
@@ -115,6 +116,8 @@
                 </section>
             </div>
 
+            <!-- data-lenis-prevent-touch : empêche Lenis d'intercepter le scroll tactile,
+                 le carousel gère son propre drag -->
             <section class="carousel" data-lenis-prevent-touch>
                 <div class="carousel__ruler">
                     <p class="carousel__label">Scroll / Drag</p>
@@ -230,6 +233,7 @@
             </dl>
             </div>
 
+            <!-- data-lenis-prevent-touch : le popup gère son propre scroll interne (mobile/tablette) -->
             <div class="popup-about" data-lenis-prevent-touch>
               <div class="popup-about__inner">
                 <!-- Portrait -->
@@ -379,6 +383,7 @@
 
 
 
+        <!-- cursor-core.js doit précéder cursor.js (dépendances partagées : cursor, mouseX/Y...) -->
         <script src="js/gsap.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/ScrollTrigger.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/SplitText.min.js"></script>

@@ -1,10 +1,12 @@
 // cursor, barV, barH, cursorMoved, mouseX, mouseY, revealCursor(), initHoverTargets()
 // sont fournis par cursor-core.js chargé avant ce fichier
 
+// Bloque le zoom au clavier/trackpad (Ctrl+molette)
 window.addEventListener('wheel', function(event) {
   if (event.ctrlKey) event.preventDefault()
 }, { passive: false })
 
+// Bloque le pinch-to-zoom Safari (événement propriétaire WebKit)
 document.addEventListener('gesturestart', function(event) {
   event.preventDefault()
 })
@@ -83,6 +85,8 @@ document.querySelector('.carousel').style.overflow = 'visible'
 
 const previewWrapper = document.querySelector('.preview-wrapper')
 const pvRect         = previewWrapper.getBoundingClientRect()
+// Fige la position actuelle en left/top classiques (au lieu du centrage via transform CSS)
+// pour que Matter.js puisse ensuite piloter son propre transform sans conflit
 previewWrapper.style.left      = pvRect.left + 'px'
 previewWrapper.style.top       = pvRect.top  + 'px'
 previewWrapper.style.transform = 'none'

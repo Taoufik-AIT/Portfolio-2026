@@ -418,6 +418,8 @@
   padding-bottom: 85px;
 }
 
+/* Les sections avec paragraphes de texte ont besoin de plus d'espace en bas
+   que les sections courtes (portrait, accordéon) */
 .about__section:has(.about__text) {
   padding-bottom: 120px;
 }
@@ -516,6 +518,11 @@
   padding: 12px 0 16px calc(var(--about-col1) + var(--about-gap));
 }
 
+/* Hauteur d'ouverture de l'accordéon — deux stratégies selon le support navigateur :
+   interpolate-size permet un vrai height:auto animé (transition fluide, contenu variable) ;
+   en fallback, on anime vers une hauteur fixe (72px) car height:auto n'est pas transitionnable
+   nativement en CSS. Approche volontairement simple après plusieurs tentatives plus complexes
+   (GSAP, grid-template-rows) qui cassaient la fluidité ou le rendu au repos. */
 @supports (interpolate-size: allow-keywords) {
   :root {
     interpolate-size: allow-keywords;
@@ -1027,9 +1034,8 @@
   .about__section {
     display: block;
     position: relative;
-    padding-top: 10px;
-    padding-bottom: 40px;
     padding-top: 5px;
+    padding-bottom: 40px;
   }
 
   .about__number {
@@ -1084,7 +1090,6 @@
     gap: var(--about-gap);
     padding-top: 5px;
     padding-bottom: 5px;
-    
   }
 
   .about__links-label {

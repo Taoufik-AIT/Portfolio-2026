@@ -7,7 +7,9 @@
   html {
     font-size: 16px;
     scroll-behavior: smooth;
+    /* Bloque pinch-zoom / double-tap sur mobile (site non zoomable par design) */
     touch-action: manipulation;
+    /* Empêche iOS de re-grossir automatiquement le texte après une rotation d'écran */
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
   }

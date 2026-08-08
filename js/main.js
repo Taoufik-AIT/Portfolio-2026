@@ -1,3 +1,5 @@
+// Lenis pilote le scroll de la page ; son calcul de hauteur scrollable doit être
+// retesté si le contenu du popup About change de taille (accordéon ouvert, resize)
 window.lenis = new Lenis({ autoRaf: true })
 const popupInner = document.querySelector('.popup-about__inner')
 const ro = new ResizeObserver(() => { window.lenis.resize() })
@@ -199,6 +201,8 @@ const natCenters = allImgs.map(function(img) {
 
 let needleX        = window.innerWidth / 2
 const copyWidth    = natCenters[imgsPerCopy] - natCenters[0]
+// Doit rester égal à (largeur du tick + gap) défini en CSS (.carousel__tick/.carousel__line) —
+// un écart désynchronise le calcul de position du tick sous l'aiguille (déjà vécu)
 const TICK_SPACING = 5.5
 
 // Seuils de boucle : milieu du gap entre la dernière image d'une copie
@@ -230,6 +234,8 @@ function loopCheck() {
 }
 
 // Ticker GSAP : lerp fluide + correction de boucle + rendu
+// lagSmoothing(0) : nécessaire pour que le drag ne "saute" jamais après un lag,
+// mais rend aussi tout décrochage de frame visible tel quel (pas de rattrapage lissé)
 gsap.ticker.lagSmoothing(0)
 
 gsap.ticker.add(function() {
@@ -362,15 +368,18 @@ function updateImageContrast(activeProject) {
 
 // ─── Wheel ────────────────────────────────────────────────────────────────────
 
+// Bloque le zoom au clavier/trackpad (Ctrl+molette)
 window.addEventListener('wheel', function(event) {
   if (event.ctrlKey) event.preventDefault()
 }, { passive: false })
 
+// Bloque le pinch-to-zoom Safari (événement propriétaire WebKit)
 document.addEventListener('gesturestart', function(event) {
   event.preventDefault()
 })
 
 window.addEventListener('wheel', function(event) {
+  // Bloque le geste de navigation "retour" au swipe horizontal (trackpad)
   if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) event.preventDefault()
   if (state.isLoading || state.isPopupOpen || state.isAboutOpen) return
   const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY

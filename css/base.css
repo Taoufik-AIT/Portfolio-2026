@@ -61,13 +61,14 @@
     font-family: var(--font-main);
     font-size: var(--text-base);
     line-height: var(--leading-normal);
+    /* Curseur natif désactivé — remplacé par le curseur custom (cursor.js) */
     cursor: none;
     user-select: none;
     -webkit-user-select: none;
-    overscroll-behavior-y: none;
   }
 
   img {
+    /* Empêche le drag et le menu "Enregistrer l'image" (appui long sur mobile) */
     -webkit-user-drag: none;
     -webkit-touch-callout: none;
   }
@@ -75,6 +76,7 @@
   html,
   body {
     overscroll-behavior-y: none;
+    /* Scrollbar native masquée par choix de design (cohérent avec le curseur custom) */
     scrollbar-width: none;
     -ms-overflow-style: none;
   }

@@ -18,6 +18,7 @@ Portfolio créatif en HTML/CSS/JS vanilla (zéro framework), animé avec GSAP. A
 6. **Pas de refactor invisible.** Ne pas introduire de nouvelle dépendance, pattern, ou changement d'architecture sans le signaler clairement et demander un accord.
 7. **Ne jamais commit sans confirmation explicite.** Après avoir appliqué une modification, il faut s'arrêter et attendre que je teste moi-même le site et confirme que ça fonctionne bien. Le commit (message clair `fix:`/`perf:`/`refactor:`) n'a lieu qu'après mon "ok, ça marche" — jamais automatiquement juste après l'application du code.
 8. **En cas de doute** sur l'impact d'un changement, le dire plutôt que de trancher seul.
+9. **Commentaires propres et utiles.** Chaque modification de code doit être commentée comme le ferait un ingénieur senior dans une vraie startup — clair, structuré, utile pour comprendre *pourquoi* (pas juste *quoi*), sans excès. Pas de commentaire pour chaque ligne triviale, mais un commentaire là où la logique n'est pas évidente à la relecture (edge case géré, choix technique non intuitif, dépendance entre deux parties du code). Cette règle s'applique à toute nouvelle modification, pas seulement lors d'une relecture dédiée.
 
 ## Objectif permanent
 

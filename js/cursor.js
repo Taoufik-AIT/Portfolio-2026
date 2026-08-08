@@ -41,7 +41,7 @@ window.addEventListener('resize', function() {
   cursorResizeTimer = setTimeout(function() {
     if (!cursorReady) return  // le loader n'a pas encore lancé showCursor : il s'en chargera
     if (isCursorTouch()) {
-      cursor.style.display = 'none'  // repassé en mobile : curseur masqué
+      cursor.style.display = 'none'
       cursorRevealDone = true
     } else if (window.getComputedStyle(cursor).display === 'none') {
       // passé en desktop et curseur caché (via CSS .cursor{display:none} OU inline) :
@@ -60,7 +60,7 @@ window.addEventListener('mousemove', function(event) {
   }
 
   if (!cursorReady) return
-  if (isMobile) return
+  if (isCursorTouch()) return
 
   if (state.isPopupOpen) {
     const pw     = popupProject.offsetWidth

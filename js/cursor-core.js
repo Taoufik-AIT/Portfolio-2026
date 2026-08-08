@@ -6,6 +6,8 @@ const cursor = document.querySelector('.cursor')
 const barV   = document.querySelector('.cursor__bar--v')
 const barH   = document.querySelector('.cursor__bar--h')
 
+// Décale l'origine du curseur sur son propre centre (pas le coin haut-gauche),
+// pour que x/y positionnent le centre visuel du curseur sur la souris
 gsap.set(cursor, { xPercent: -50, yPercent: -50 })
 
 let cursorMoved = false

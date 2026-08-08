@@ -30,6 +30,8 @@ const dds        = Array.from(popupProject.querySelectorAll('dd'))
 gsap.set(popupProject, { display: 'none' })
 gsap.set(popupAbout,   { display: 'none' })
 
+// Synchronise ScrollTrigger sur le scroll piloté par Lenis (sinon les triggers
+// ne se mettent jamais à jour, Lenis interceptant le scroll natif)
 if (window.lenis) window.lenis.on('scroll', ScrollTrigger.update)
 
 // ─── About animation state ────────────────────────────────────────────────────
@@ -91,6 +93,8 @@ function openAbout() {
   ScrollTrigger.refresh()
 
   const aboutScroller = isAboutInternalScroll() ? popupAbout : window
+  // popupAbout scrolle en interne sur mobile/tablette-portrait (plein écran) ;
+  // en desktop/paysage il suit le scroll de la page (voir isAboutInternalScroll, main.js)
 
   function inVP(el) { return el && el.getBoundingClientRect().top < window.innerHeight }
 
@@ -262,6 +266,8 @@ function openPopup(clientX, clientY) {
   if (isCursorTouch()) {
     gsap.set(popupProject, { x: 0, y: 0 })
   } else {
+    // Positionne le popup à côté du curseur, du côté opposé au bord le plus proche,
+    // en le maintenant toujours dans les limites du viewport (clamp margin/x/y)
     const pw     = popupProject.offsetWidth
     const ph     = popupProject.offsetHeight
     const cw     = 10
@@ -374,6 +380,8 @@ const accordionItems = Array.from(popupAbout.querySelectorAll('.accordion__item'
 
 // ─── Link reveal structure (once at init) ─────────────────────────────────────
 
+// Sépare texte et icône de chaque lien dans leur propre <span> : permet à SplitText
+// de masquer/animer le texte indépendamment du reveal de l'icône (yPercent séparé)
 Array.from(popupAbout.querySelectorAll('.about__link')).forEach(function(link) {
   const svg  = link.querySelector('svg')
   const text = Array.from(link.childNodes)
@@ -405,6 +413,8 @@ const aboutCaption       = popupAbout.querySelector('.about__portrait-caption')
 const aboutOuterSeps     = Array.from(
   popupAbout.querySelector('.popup-about__inner').children
 ).filter(function(el) { return el.classList.contains('separator') })
+// Enfants DIRECTS uniquement : exclut les séparateurs entre items de l'accordéon
+// (imbriqués plus profond), qui ont leur propre animation gérée ailleurs
 const aboutAllSeps       = Array.from(popupAbout.querySelectorAll('.separator'))
 const aboutSections      = Array.from(popupAbout.querySelectorAll('.about__section')).map(function(sec) {
   return {

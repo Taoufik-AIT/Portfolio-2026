@@ -729,12 +729,12 @@
   }
 
   .project__name {
-    font-size: 11px;
+    font-size: 14px;
   }
 
   .project__meta {
     white-space: nowrap;
-    font-size: 11px;
+    font-size: 14px;
   }
 
   .project__cta {
@@ -804,14 +804,52 @@
     height: 100dvh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: calc(40px + env(safe-area-inset-bottom));
+    padding-bottom: calc(15px + env(safe-area-inset-bottom));
     touch-action: manipulation;
-    font-size: 11px;
-    --about-col1: 165px;
+    font-size: 14px;
+    --about-col1: max(120px, calc(100vw - 574px));
   }
 
   .popup-about::after {
     display: none;
+  }
+
+  .about__portrait-caption,
+  .accordion__letter,
+  .accordion__title,
+  .about__links-label,
+  .about__link {
+    font-size: 14px;
+  }
+}
+
+/* En dessous de 600px de large, la colonne de texte (About me / My approach)
+   devient trop étroite à 14px pour rester confortable — on réutilise le pattern
+   empilé du mobile (titre au-dessus, description dessous) pour .about__section
+   uniquement. L'accordéon et les liens ne sont pas concernés : leurs formules
+   d'alignement mobile supposent la valeur mobile de --about-col1 (35px, codée en
+   dur), incompatible avec la valeur tablette — on n'y touche pas. */
+@media (min-width: 431px) and (max-width: 599px) and (orientation: portrait) {
+  .about__section:has(.about__text) {
+    display: block;
+    position: relative;
+    padding-top: 5px;
+    padding-bottom: 80px;
+  }
+
+  .about__section:has(.about__text) .about__number {
+    position: absolute;
+    top: 10px;
+    right: 0;
+  }
+
+  .about__section:has(.about__text) .about__content {
+    display: block;
+    margin-top: 12px;
+  }
+
+  .about__text {
+    width: 90%;
   }
 }
 
@@ -961,6 +999,10 @@
     margin-left: auto;
   }
 
+  .project__meta {
+    font-size: 14px;
+  }
+
   /* ── About popup ── */
 
   .popup-about {
@@ -1081,6 +1123,14 @@
   .about__accordion .accordion__content {
     /* même position que .accordion__title : (col1+gap) + le même décalage (gap s'annule) */
     padding-left: calc(var(--about-col1) + 100% - 35px - 113px - 90px);
+  }
+
+  .about__portrait-caption,
+  .accordion__letter,
+  .accordion__title,
+  .about__links-label,
+  .about__link {
+    font-size: 14px;
   }
 
   .about__links {
@@ -1227,14 +1277,14 @@
   }
 
   .project-info {
-    left: -711px;
+    left: calc(569px - 50vw);
   }
 
   .nav__description {
     position: absolute;
     top: 22px;
-    left: 730px;
-    font-size: 16px;
+    left: calc(50vw - 550px);
+    font-size: 17px;
   }
 
   .nav__logo {
@@ -1242,15 +1292,15 @@
   }
 
   .nav__links {
-    font-size: 16px;
+    font-size: 17px;
   }
 
   .nav__cta {
-    font-size: 16px;
+    font-size: 17px;
   }
 
   .project__name {
-    font-size: 18px;
+    font-size: 17px;
   }
 
   .project__meta {
@@ -1266,7 +1316,7 @@
   }
 
   .popup__title {
-    font-size: 15px;
+    font-size: 17px;
   }
 
   .popup__description,
@@ -1277,7 +1327,7 @@
 
   .popup-about {
     width: 980px;
-    font-size: 18px;
+    font-size: 17px;
     --about-col1: 355px;
   }
 
@@ -1307,6 +1357,91 @@
   .about__links-label,
   .about__link {
     font-size: 17px;
+  }
+}
+
+/* Taille de police uniforme sur toute la plage desktop "de base" (1025-1599px),
+   quel que soit le sous-mode côte à côte/empilé à l'intérieur de cette plage */
+@media (min-width: 1025px) and (max-width: 1599px) {
+  .project__name {
+    font-size: 14px;
+  }
+
+  .project__meta {
+    font-size: 14px;
+  }
+
+  .popup__title {
+    font-size: 14px;
+  }
+
+  .popup__description,
+  .popup__details dt,
+  .popup__details dd {
+    font-size: 14px;
+  }
+
+  .popup-about {
+    font-size: 14px;
+  }
+
+  .about__portrait-caption,
+  .accordion__letter,
+  .accordion__title,
+  .about__links-label,
+  .about__link {
+    font-size: 14px;
+  }
+}
+
+/* Bloc infos au-dessus du preview (au lieu de à côté) sur les plages trop étroites
+   pour tenir côte à côte : le bas de la plage desktop "de base" (1025-1399px) et
+   le haut de la plage ≥1600px (grand preview 1100px, sous ~2100px) */
+@media (min-width: 1025px) and (max-width: 1399px), (min-width: 1600px) and (max-width: 2100px) {
+  .project-info {
+    position: absolute;
+    bottom: 100%;
+    top: auto;
+    left: 0;
+    width: 100%;
+    transform: none;
+    padding-bottom: 8px;
+  }
+
+  .project__cta {
+    position: static;
+    margin-left: auto;
+  }
+}
+
+/* En mode empilé (1025-1399px), plus besoin de garder le preview compact puisque
+   les infos ne sont plus à côté — on l'agrandit jusqu'aux marges (même pattern que
+   la tablette portrait) et on centre nav__description sur toute la barre de nav,
+   plutôt que sur le bord du preview (pertinent uniquement en mode côte-à-côte) */
+@media (min-width: 1025px) and (max-width: 1399px) {
+  .preview-wrapper {
+    width: calc(100% - (2 * var(--grid-margin)));
+  }
+
+  .preview {
+    aspect-ratio: 775 / 456;
+    height: auto;
+  }
+
+  .nav__description {
+    position: absolute;
+    top: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/* Entre les deux zones empilées : petit preview (775px) mais assez de place pour
+   rester côte à côte, à condition d'ancrer .project-info sur la marge nav (même
+   principe que la formule ≥1600px, adaptée à la demi-largeur du petit preview) */
+@media (min-width: 1400px) and (max-width: 1599px) {
+  .project-info {
+    left: calc(406.5px - 50vw);
   }
 }
 

@@ -40,7 +40,7 @@ const projects = [
     type: 'Design & Development',
     client: 'Dimagin-Studio',
     sector: 'Tech',
-    role: 'web engineer & motion',
+    role: 'web engineer / motion',
     scope: 'UX / UI / Frontend',
     description1: 'I designed and developed a modern e-commerce experience focused on making product discovery and purchasing simple, fast, and visually engaging. The goal was to create a digital storefront where users can easily explore products, understand their value, and complete purchases with minimal friction.',
     description2: 'The project focused on clear product presentation, intuitive navigation, and a streamlined checkout flow to improve usability and conversion. The interface was designed to highlight the brand while maintaining a clean and scalable design system.',

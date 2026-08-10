@@ -96,6 +96,11 @@ function openAbout() {
   // popupAbout scrolle en interne sur mobile/tablette-portrait (plein écran) ;
   // en desktop/paysage il suit le scroll de la page (voir isAboutInternalScroll, main.js)
 
+  // 'top 100%' nécessaire uniquement pour scroller:window (desktop/paysage) — la page peut
+  // être trop courte pour atteindre 90%. En scroll interne (mobile/tablette-portrait), il y a
+  // largement la marge nécessaire, donc on garde le seuil plus précis d'origine.
+  const bottomTriggerStart = aboutScroller === window ? 'top 100%' : 'top 90%'
+
   function inVP(el) { return el && el.getBoundingClientRect().top < window.innerHeight }
 
   let t = 1.0
@@ -107,7 +112,7 @@ function openAbout() {
       t += 0.12
     } else {
       aboutTriggers.push(ScrollTrigger.create({
-        trigger: sep, start: 'top 100%', once: true,
+        trigger: sep, start: bottomTriggerStart, once: true,
         scroller: aboutScroller,
         onEnter: function() { gsap.to(sep, { scaleX: 1, duration: 0.9, ease: 'power2.out' }) }
       }))
@@ -210,7 +215,7 @@ function openAbout() {
       })
     } else {
       aboutTriggers.push(ScrollTrigger.create({
-        trigger: aboutLinksSection, start: 'top 100%', once: true,
+        trigger: aboutLinksSection, start: bottomTriggerStart, once: true,
         scroller: aboutScroller,
         onEnter: function() {
           if (linksLabelSplit) gsap.to(linksLabelSplit.lines, { yPercent: 0, duration: 0.8, ease: 'power3.out' })
@@ -499,6 +504,21 @@ function closeDropdown() {
 
 ctaWrapper.addEventListener('mouseenter', openDropdown)
 ctaWrapper.addEventListener('mouseleave', closeDropdown)
+
+// Sur mobile (pas de vrai hover) : toggle ouverture/fermeture au clic
+ctaWrapper.addEventListener('click', function(event) {
+  if (!isMobile) return
+  event.stopPropagation()
+  if (dropdownOpen) closeDropdown()
+  else openDropdown()
+})
+
+// Ferme au clic en dehors, si ouvert
+document.addEventListener('click', function(event) {
+  if (!dropdownOpen) return
+  if (event.target.closest('.nav__chat-wrapper')) return
+  closeDropdown()
+})
 
 // ─── Clicks globaux ───────────────────────────────────────────────────────────
 
